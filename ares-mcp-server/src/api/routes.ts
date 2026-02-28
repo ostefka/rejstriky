@@ -33,9 +33,11 @@ router.get("/search", async (req, res) => {
     if (name) params.obchodniJmeno = String(name);
     if (ico) params.ico = [String(ico)];
     if (city || street) {
-      params.sidlo = {} as any;
-      if (city) params.sidlo.nazevObce = String(city);
-      if (street) params.sidlo.nazevUlice = String(street);
+      const addressParts = [street, city].filter(Boolean).map(String);
+      params.sidlo = { textovaAdresa: addressParts.join(", ") };
+      if (!name && !ico) {
+        params.pravniForma = ["112", "121"];
+      }
     }
     params.pocet = maxResults ? Math.min(parseInt(String(maxResults), 10) || 10, 100) : 10;
 
@@ -52,6 +54,10 @@ router.get("/search", async (req, res) => {
     res.json({ total: data.pocetCelkem ?? companies.length, companies });
   } catch (error: any) {
     log.error("api_search_error", { error: error.message });
+    if (error.message?.includes("VYSTUP_PRILIS_MNOHO_VYSLEDKU")) {
+      res.status(400).json({ error: "Příliš mnoho výsledků. Upřesněte hledání přidáním názvu firmy nebo IČO." });
+      return;
+    }
     res.status(502).json({ error: "Failed to search companies" });
   }
 });
