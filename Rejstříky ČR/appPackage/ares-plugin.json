@@ -1,0 +1,98 @@
+{
+  "$schema": "https://aka.ms/json-schemas/copilot-extensions/v2.1/plugin.schema.json",
+  "schema_version": "v2.4",
+  "name_for_human": "ARES – Obchodní rejstřík",
+  "description_for_human": "Search Czech companies in the ARES business registry by name, IČO, city, or street.",
+  "contact_email": "publisher-email@example.com",
+  "namespace": "aresOpenApi",
+  "functions": [
+    {
+      "name": "searchCompanies",
+      "description": "Search Czech companies by name, IČO, city, or street in the ARES registry.",
+      "capabilities": {
+        "response_semantics": {
+          "data_path": "$.companies",
+          "properties": {
+            "title": "$.name",
+            "subtitle": "$.ico"
+          }
+        }
+      }
+    },
+    {
+      "name": "getCompanyDetail",
+      "description": "Get full company profile by IČO including legal form, address, VAT ID, CZ-NACE codes.",
+      "capabilities": {
+        "response_semantics": {
+          "data_path": "$",
+          "properties": {
+            "title": "$.name",
+            "subtitle": "$.ico"
+          }
+        }
+      }
+    },
+    {
+      "name": "getCompanyOfficers",
+      "description": "Look up directors, board members and statutory body members from the Commercial Register.",
+      "capabilities": {
+        "response_semantics": {
+          "data_path": "$.statutoryBodies",
+          "properties": {
+            "title": "$.name"
+          }
+        }
+      }
+    },
+    {
+      "name": "getTradeLicenses",
+      "description": "Get active and historical trade licenses (živnostenská oprávnění) for a company.",
+      "capabilities": {
+        "response_semantics": {
+          "data_path": "$.licenses",
+          "properties": {
+            "title": "$.subject",
+            "subtitle": "$.type"
+          }
+        }
+      }
+    },
+    {
+      "name": "checkInsolvency",
+      "description": "Check if a company has insolvency proceedings in the CEÚ register.",
+      "capabilities": {
+        "response_semantics": {
+          "data_path": "$",
+          "properties": {
+            "title": "$.name",
+            "subtitle": "$.ico"
+          }
+        }
+      }
+    },
+    {
+      "name": "validateAddress",
+      "description": "Validate and standardize a Czech address against the RÚIAN database.",
+      "capabilities": {
+        "response_semantics": {
+          "data_path": "$.addresses",
+          "properties": {
+            "title": "$.formatted"
+          }
+        }
+      }
+    }
+  ],
+  "runtimes": [
+    {
+      "type": "OpenApi",
+      "auth": {
+        "type": "None"
+      },
+      "run_for_functions": ["searchCompanies", "getCompanyDetail", "getCompanyOfficers", "getTradeLicenses", "checkInsolvency", "validateAddress"],
+      "spec": {
+        "url": "ares-openapi.json"
+      }
+    }
+  ]
+}

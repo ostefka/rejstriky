@@ -1,0 +1,364 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "ARES Czech Business Registry API",
+    "description": "Search and retrieve information about Czech companies from the official ARES database.",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://ares.ai-news.cz"
+    }
+  ],
+  "paths": {
+    "/api/search": {
+      "get": {
+        "operationId": "searchCompanies",
+        "summary": "Search Czech companies by name, IČO, city, or street",
+        "description": "Search the ARES business registry for Czech companies. Returns matching companies with basic info including name, IČO, legal form, address, and status.",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "query",
+            "description": "Company name or part of name to search for",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "ico",
+            "in": "query",
+            "description": "Czech company identification number (IČO) - 8 digits",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "city",
+            "in": "query",
+            "description": "City name to filter by",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "street",
+            "in": "query",
+            "description": "Street name to filter by",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "maxResults",
+            "in": "query",
+            "description": "Maximum results to return (default 10, max 100)",
+            "schema": { "type": "integer", "default": 10, "maximum": 100 }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Search results",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "total": { "type": "integer" },
+                    "companies": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "name": { "type": "string" },
+                          "ico": { "type": "string" },
+                          "status": { "type": "string" },
+                          "legalForm": { "type": "string" },
+                          "address": { "type": "string" },
+                          "founded": { "type": "string" }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/company/{ico}": {
+      "get": {
+        "operationId": "getCompanyDetail",
+        "summary": "Get full company profile by IČO",
+        "description": "Get detailed information about a Czech company including legal form, address, VAT ID, CZ-NACE codes, and registrations.",
+        "parameters": [
+          {
+            "name": "ico",
+            "in": "path",
+            "required": true,
+            "description": "Czech company identification number (IČO)",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Company detail",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "name": { "type": "string" },
+                    "ico": { "type": "string" },
+                    "dic": { "type": "string" },
+                    "status": { "type": "string" },
+                    "legalForm": { "type": "string" },
+                    "address": { "type": "string" },
+                    "founded": { "type": "string" },
+                    "lastUpdated": { "type": "string" },
+                    "czNace": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "code": { "type": "string" },
+                          "description": { "type": "string" }
+                        }
+                      }
+                    },
+                    "registrations": {
+                      "type": "array",
+                      "items": { "type": "string" }
+                    },
+                    "financialAuthority": { "type": "string" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/company/{ico}/officers": {
+      "get": {
+        "operationId": "getCompanyOfficers",
+        "summary": "Get directors and statutory body members",
+        "description": "Look up directors, board members and statutory body members from the Commercial Register for a Czech company.",
+        "parameters": [
+          {
+            "name": "ico",
+            "in": "path",
+            "required": true,
+            "description": "Czech company identification number (IČO)",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Company officers",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "name": { "type": "string" },
+                    "ico": { "type": "string" },
+                    "courtFile": { "type": "string" },
+                    "register": { "type": "string" },
+                    "registeredCapital": {
+                      "type": "object",
+                      "properties": {
+                        "amount": { "type": "number" },
+                        "currency": { "type": "string" }
+                      }
+                    },
+                    "statutoryBodies": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "name": { "type": "string" },
+                          "actingMethod": { "type": "string" },
+                          "members": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "name": { "type": "string" },
+                                "dateOfBirth": { "type": "string" },
+                                "memberSince": { "type": "string" },
+                                "inRoleSince": { "type": "string" },
+                                "role": { "type": "string" },
+                                "address": { "type": "string" }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/company/{ico}/licenses": {
+      "get": {
+        "operationId": "getTradeLicenses",
+        "summary": "Get trade licenses for a company",
+        "description": "Get active and historical trade licenses (živnostenská oprávnění) from the Trade Register for a Czech company.",
+        "parameters": [
+          {
+            "name": "ico",
+            "in": "path",
+            "required": true,
+            "description": "Czech company identification number (IČO)",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Trade licenses",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "name": { "type": "string" },
+                    "ico": { "type": "string" },
+                    "address": { "type": "string" },
+                    "totalLicenses": { "type": "integer", "description": "Total number of trade licenses" },
+                    "activeLicenses": { "type": "integer", "description": "Number of currently active licenses (no validTo date)" },
+                    "licenses": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "subject": { "type": "string" },
+                          "type": { "type": "string" },
+                          "validFrom": { "type": "string" },
+                          "validTo": { "type": "string", "nullable": true, "description": "End date if license expired, null if still active" }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/company/{ico}/insolvency": {
+      "get": {
+        "operationId": "checkInsolvency",
+        "summary": "Check company insolvency status",
+        "description": "Check if a Czech company has any insolvency proceedings in the CEÚ register. Useful for due diligence.",
+        "parameters": [
+          {
+            "name": "ico",
+            "in": "path",
+            "required": true,
+            "description": "Czech company identification number (IČO)",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Insolvency check result",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "name": { "type": "string" },
+                    "ico": { "type": "string" },
+                    "hasInsolvency": { "type": "boolean" },
+                    "records": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "courtFile": { "type": "string" },
+                          "status": { "type": "string" },
+                          "started": { "type": "string" },
+                          "ended": { "type": "string" },
+                          "court": { "type": "string" },
+                          "type": { "type": "string" }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/address/validate": {
+      "get": {
+        "operationId": "validateAddress",
+        "summary": "Validate a Czech address against RÚIAN",
+        "description": "Validate and standardize a Czech address using the ARES standardized address database (RÚIAN).",
+        "parameters": [
+          {
+            "name": "city",
+            "in": "query",
+            "required": true,
+            "description": "City or municipality name",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "street",
+            "in": "query",
+            "description": "Street name",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "houseNumber",
+            "in": "query",
+            "description": "House number",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "postalCode",
+            "in": "query",
+            "description": "Postal code / PSČ (5 digits)",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "maxResults",
+            "in": "query",
+            "description": "Maximum results (default 5, max 50)",
+            "schema": { "type": "integer", "default": 5, "maximum": 50 }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Address validation results",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "total": { "type": "integer" },
+                    "addresses": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "formatted": { "type": "string" },
+                          "ruianCode": { "type": "string" },
+                          "city": { "type": "string" },
+                          "street": { "type": "string" },
+                          "houseNumber": { "type": "string" },
+                          "postalCode": { "type": "string" }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

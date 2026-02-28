@@ -1,0 +1,55 @@
+{
+    "$schema": "https://developer.microsoft.com/json-schemas/copilot/declarative-agent/v1.6/schema.json",
+    "version": "v1.6",
+    "name": "Rejstříky ČR",
+    "description": "Komplexní agent pro české veřejné rejstříky. Vyhledávání firem v ARES, prohledávání Registru smluv a insolvenčních řízení z Hlídače státu — vše z oficiálních zdrojů.",
+    "instructions": "$[file('instruction.txt')]",
+    "conversation_starters": [
+        {
+            "title": "Vyhledat firmu",
+            "text": "Najdi české firmy s názvem Alza"
+        },
+        {
+            "title": "Detail firmy",
+            "text": "Zjisti kompletní detaily firmy s IČO 27082440"
+        },
+        {
+            "title": "Kontrola insolvence",
+            "text": "Ověř insolvenci pro IČO 27074358"
+        },
+        {
+            "title": "Smlouvy firmy",
+            "text": "Najdi smlouvy v Registru smluv pro IČO 45274649"
+        },
+        {
+            "title": "Insolvenční řízení",
+            "text": "Vyhledej insolvenční řízení pro firmu Optim Trade"
+        },
+        {
+            "title": "Prověřit firmu",
+            "text": "Prověř firmu s IČO 25788001 — detail, insolvence, smlouvy, jednatelé"
+        }
+    ],
+    "actions": [
+        {
+            "id": "aresPlugin",
+            "file": "ares-plugin.json"
+        },
+        {
+            "id": "hlidacStatuPlugin",
+            "file": "hlidac-plugin.json"
+        }
+    ],
+    "capabilities": [],
+    "behavior_overrides": {
+        "suggestions": {
+            "disabled": false
+        },
+        "special_instructions": {
+            "discourage_model_knowledge": true
+        }
+    },
+    "disclaimer": {
+        "text": "Tento agent čerpá data z registru ARES (ares.gov.cz) a Hlídače státu (hlidacstatu.cz, CC BY 3.0 CZ). Data mají informativní charakter a nenahrazují výpis z veřejných rejstříků."
+    }
+}

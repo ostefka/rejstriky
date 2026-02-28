@@ -1,0 +1,303 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Hlídač státu — Smlouvy a Insolvence",
+    "description": "Search Czech government contracts (Registr smluv) and insolvency proceedings via Hlídač státu. Data provided under CC BY 3.0 CZ license. Source: hlidacstatu.cz",
+    "version": "1.0.0",
+    "license": {
+      "name": "CC BY 3.0 CZ",
+      "url": "https://creativecommons.org/licenses/by/3.0/cz/"
+    }
+  },
+  "servers": [
+    {
+      "url": "https://ares.ai-news.cz"
+    }
+  ],
+  "paths": {
+    "/api/hs/contracts/search": {
+      "get": {
+        "operationId": "searchContracts",
+        "summary": "Search Czech government contracts in Registr smluv",
+        "description": "Search government contracts by IČO (ico:12345678), company name, or free text. Returns contracts with parties, amounts, and dates. Source: Hlídač státu (hlidacstatu.cz), CC BY 3.0.",
+        "parameters": [
+          {
+            "name": "query",
+            "in": "query",
+            "required": true,
+            "description": "Search query. Use 'ico:12345678' to search by IČO, or free text for contract subjects and parties.",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Page number (default 1)",
+            "schema": { "type": "integer", "default": 1 }
+          },
+          {
+            "name": "sort",
+            "in": "query",
+            "description": "Sort: 0=relevance, 1=newest, 2=oldest, 3=highest amount, 4=lowest amount",
+            "schema": { "type": "integer", "default": 0 }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Contract search results",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "total": { "type": "integer" },
+                    "page": { "type": "integer" },
+                    "contracts": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": { "type": "string" },
+                          "subject": { "type": "string", "nullable": true },
+                          "amountCZK": { "type": "number", "nullable": true, "description": "Calculated price with VAT in CZK" },
+                          "amountWithoutVAT": { "type": "number", "nullable": true },
+                          "payer": {
+                            "type": "object",
+                            "nullable": true,
+                            "properties": {
+                              "name": { "type": "string" },
+                              "ico": { "type": "string" }
+                            }
+                          },
+                          "recipients": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "name": { "type": "string" },
+                                "ico": { "type": "string" }
+                              }
+                            }
+                          },
+                          "dateSigned": { "type": "string", "nullable": true },
+                          "issues": { "type": "array", "items": { "type": "string" } },
+                          "sourceUrl": { "type": "string" }
+                        }
+                      }
+                    },
+                    "attribution": {
+                      "type": "object",
+                      "properties": {
+                        "source": { "type": "string" },
+                        "url": { "type": "string" },
+                        "license": { "type": "string" }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/hs/contracts/{id}": {
+      "get": {
+        "operationId": "getContractDetail",
+        "summary": "Get full detail of a government contract",
+        "description": "Get complete contract detail including parties, amounts, attachments, and detected issues. Source: Hlídač státu, CC BY 3.0.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "Contract ID from Registr smluv",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Contract detail",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": { "type": "string" },
+                    "subject": { "type": "string", "nullable": true },
+                    "amountCZK": { "type": "number", "nullable": true },
+                    "amountWithoutVAT": { "type": "number", "nullable": true },
+                    "dateSigned": { "type": "string", "nullable": true },
+                    "datePublished": { "type": "string", "nullable": true },
+                    "payer": {
+                      "type": "object",
+                      "nullable": true,
+                      "properties": {
+                        "name": { "type": "string" },
+                        "ico": { "type": "string" },
+                        "address": { "type": "string", "nullable": true }
+                      }
+                    },
+                    "recipients": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "name": { "type": "string" },
+                          "ico": { "type": "string" },
+                          "address": { "type": "string", "nullable": true }
+                        }
+                      }
+                    },
+                    "issues": { "type": "array", "items": { "type": "string" } },
+                    "attachments": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "name": { "type": "string", "nullable": true },
+                          "wordCount": { "type": "integer", "nullable": true }
+                        }
+                      }
+                    },
+                    "sourceUrl": { "type": "string" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/hs/insolvency/search": {
+      "get": {
+        "operationId": "searchInsolvencyCases",
+        "summary": "Search Czech insolvency proceedings",
+        "description": "Search insolvency cases by IČO (ico:12345678), company/person name, or court file number. Returns detailed cases with debtors, creditors, and administrators. Source: Hlídač státu, CC BY 3.0.",
+        "parameters": [
+          {
+            "name": "query",
+            "in": "query",
+            "required": true,
+            "description": "Search query. Use 'ico:12345678' for IČO search, or name/text for free-text search.",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "description": "Page number (default 1)",
+            "schema": { "type": "integer", "default": 1 }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Insolvency search results",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "total": { "type": "integer" },
+                    "page": { "type": "integer" },
+                    "cases": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "courtFileNumber": { "type": "string", "nullable": true },
+                          "status": { "type": "string", "nullable": true },
+                          "court": { "type": "string", "nullable": true },
+                          "dateFiled": { "type": "string", "nullable": true },
+                          "debtors": {
+                            "type": "array",
+                            "items": {
+                              "type": "object",
+                              "properties": {
+                                "name": { "type": "string", "nullable": true },
+                                "ico": { "type": "string", "nullable": true }
+                              }
+                            }
+                          },
+                          "creditorsCount": { "type": "integer" },
+                          "administrators": { "type": "array", "items": { "type": "string" } },
+                          "sourceUrl": { "type": "string" }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/hs/insolvency/detail": {
+      "get": {
+        "operationId": "getInsolvencyDetail",
+        "summary": "Get full detail of an insolvency case",
+        "description": "Get complete insolvency case detail including debtors, creditors count, administrators, and recent documents. Source: Hlídač státu, CC BY 3.0.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "query",
+            "required": true,
+            "description": "Insolvency case identifier — court file number (e.g. 'INS 10525/2016')",
+            "schema": { "type": "string" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Insolvency case detail",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "courtFileNumber": { "type": "string" },
+                    "status": { "type": "string", "nullable": true },
+                    "court": { "type": "string", "nullable": true },
+                    "dateFiled": { "type": "string", "nullable": true },
+                    "debtors": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "name": { "type": "string", "nullable": true },
+                          "ico": { "type": "string", "nullable": true },
+                          "address": { "type": "string", "nullable": true }
+                        }
+                      }
+                    },
+                    "creditorsCount": { "type": "integer" },
+                    "administrators": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "name": { "type": "string", "nullable": true },
+                          "address": { "type": "string", "nullable": true }
+                        }
+                      }
+                    },
+                    "documentsCount": { "type": "integer" },
+                    "recentDocuments": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "date": { "type": "string", "nullable": true },
+                          "description": { "type": "string", "nullable": true }
+                        }
+                      }
+                    },
+                    "sourceUrl": { "type": "string" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

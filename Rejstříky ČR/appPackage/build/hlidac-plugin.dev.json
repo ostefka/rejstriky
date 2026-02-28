@@ -1,0 +1,78 @@
+{
+  "$schema": "https://aka.ms/json-schemas/copilot-extensions/v2.1/plugin.schema.json",
+  "schema_version": "v2.4",
+  "name_for_human": "Hlídač státu – Smlouvy a insolvence",
+  "description_for_human": "Search Czech government contracts (Registr smluv) and insolvency proceedings via Hlídač státu.",
+  "contact_email": "publisher-email@example.com",
+  "namespace": "hlidacStatu",
+  "functions": [
+    {
+      "name": "searchContracts",
+      "description": "Search Czech government contracts in Registr smluv by IČO (ico:12345678), company name, or free text.",
+      "capabilities": {
+        "response_semantics": {
+          "data_path": "$.contracts",
+          "properties": {
+            "title": "$.subject",
+            "subtitle": "$.id",
+            "url": "$.sourceUrl"
+          }
+        }
+      }
+    },
+    {
+      "name": "getContractDetail",
+      "description": "Get full detail of a government contract including parties, amounts, attachments, and issues.",
+      "capabilities": {
+        "response_semantics": {
+          "data_path": "$",
+          "properties": {
+            "title": "$.subject",
+            "subtitle": "$.id",
+            "url": "$.sourceUrl"
+          }
+        }
+      }
+    },
+    {
+      "name": "searchInsolvencyCases",
+      "description": "Search Czech insolvency proceedings by IČO (ico:12345678), company/person name, or court file number.",
+      "capabilities": {
+        "response_semantics": {
+          "data_path": "$.cases",
+          "properties": {
+            "title": "$.courtFileNumber",
+            "subtitle": "$.status",
+            "url": "$.sourceUrl"
+          }
+        }
+      }
+    },
+    {
+      "name": "getInsolvencyDetail",
+      "description": "Get full detail of an insolvency case including debtors, creditors, administrators, and documents.",
+      "capabilities": {
+        "response_semantics": {
+          "data_path": "$",
+          "properties": {
+            "title": "$.courtFileNumber",
+            "subtitle": "$.status",
+            "url": "$.sourceUrl"
+          }
+        }
+      }
+    }
+  ],
+  "runtimes": [
+    {
+      "type": "OpenApi",
+      "auth": {
+        "type": "None"
+      },
+      "run_for_functions": ["searchContracts", "getContractDetail", "searchInsolvencyCases", "getInsolvencyDetail"],
+      "spec": {
+        "url": "hlidac-openapi.json"
+      }
+    }
+  ]
+}

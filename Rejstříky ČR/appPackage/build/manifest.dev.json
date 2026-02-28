@@ -1,0 +1,41 @@
+{
+    "$schema": "https://developer.microsoft.com/en-us/json-schemas/teams/v1.24/MicrosoftTeams.schema.json",
+    "manifestVersion": "1.24",
+    "version": "1.2.0",
+    "id": "9b3bb4d1-d97e-4351-aae5-e4567c7e40cc",
+    "developer": {
+        "name": "Ondrej Stefka",
+        "websiteUrl": "https://www.ai-news.cz",
+        "privacyUrl": "https://www.ai-news.cz/privacy",
+        "termsOfUseUrl": "https://www.ai-news.cz/terms"
+    },
+    "icons": {
+        "color": "color.png",
+        "outline": "outline.png"
+    },
+    "name": {
+        "short": "Rejstříky ČR",
+        "full": "Rejstříky ČR – České obchodní rejstříky, smlouvy a insolvence"
+    },
+    "description": {
+        "short": "Vyhledávání firem, smluv a insolvencí v českých rejstřících",
+        "full": "Komplexní agent pro české veřejné rejstříky. Vyhledávej firmy v ARES (obchodní rejstřík, živnosti, statutární orgány, insolvence, validace adres), prohledávej Registr smluv a insolvenční řízení z dat Hlídače státu. Vše z oficiálních zdrojů."
+    },
+    "accentColor": "#003087",
+    "composeExtensions": [],
+    "copilotAgents": {
+        "declarativeAgents": [
+            {
+                "id": "declarativeAgent",
+                "file": "declarativeAgent.json"
+            }
+        ]
+    },
+    "permissions": [
+        "identity",
+        "messageTeamMembers"
+    ],
+    "validDomains": [
+        "ares.ai-news.cz"
+    ]
+}
