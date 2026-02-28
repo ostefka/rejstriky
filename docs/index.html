@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>M365 Copilot Agents — Testovací dokumentace</title>
+    <title>Rejstříky ČR — M365 Copilot Agent</title>
     <style>
         :root {
             --bg: #0d1117;
@@ -71,8 +71,8 @@
         .badge-green { background: rgba(63,185,80,0.15); color: var(--green); border: 1px solid rgba(63,185,80,0.3); }
         .badge-purple { background: rgba(188,140,255,0.15); color: var(--purple); border: 1px solid rgba(188,140,255,0.3); }
 
-        /* Nav tabs */
-        .tabs {
+        /* Nav links */
+        .nav-links {
             display: flex;
             gap: 0;
             border-bottom: 1px solid var(--border);
@@ -81,33 +81,31 @@
             top: 0;
             z-index: 100;
         }
-        .tab {
+        .nav-links a {
             flex: 1;
             padding: 14px 16px;
             text-align: center;
-            cursor: pointer;
             font-weight: 600;
             font-size: 0.95rem;
             color: var(--text-muted);
+            text-decoration: none;
             border-bottom: 2px solid transparent;
             transition: all 0.2s;
-            user-select: none;
         }
-        .tab:hover { color: var(--text); background: var(--surface2); }
-        .tab.active { color: var(--accent); border-bottom-color: var(--accent); }
-        .tab-icon { margin-right: 6px; }
+        .nav-links a:hover { color: var(--text); background: var(--surface2); }
+        .nav-links a.active { color: var(--accent); border-bottom-color: var(--accent); }
 
         /* Sections */
-        .section { display: none; padding: 40px 0 60px; }
-        .section.active { display: block; }
+        main { padding: 40px 0 60px; }
 
         h2 {
             font-size: 1.6rem;
-            margin-bottom: 8px;
+            margin: 40px 0 8px;
             display: flex;
             align-items: center;
             gap: 10px;
         }
+        h2:first-child { margin-top: 0; }
         h2 .emoji { font-size: 1.4rem; }
         h3 {
             font-size: 1.15rem;
@@ -246,11 +244,6 @@
             border-left: 3px solid var(--yellow);
         }
         .callout-warn strong { color: var(--yellow); }
-        .callout-danger {
-            background: rgba(248,81,73,0.08);
-            border-left: 3px solid var(--red);
-        }
-        .callout-danger strong { color: var(--red); }
         .callout-info {
             background: rgba(88,166,255,0.08);
             border-left: 3px solid var(--accent);
@@ -326,40 +319,40 @@
 <body>
     <header>
         <div class="container">
-            <h1>🇨🇿 M365 Copilot <span>Agents</span></h1>
-            <p>Testovací dokumentace pro deklarativní agenty nad českými veřejnými daty</p>
+            <h1>🏢 Rejstříky <span>ČR</span></h1>
+            <p>Agent pro M365 Copilot — české veřejné rejstříky, smlouvy a insolvence</p>
             <div class="badge-row">
                 <span class="badge badge-blue">M365 Copilot</span>
-                <span class="badge badge-green">MCP Servers</span>
-                <span class="badge badge-purple">Azure Container Apps</span>
+                <span class="badge badge-green">ARES</span>
+                <span class="badge badge-purple">Hlídač státu</span>
             </div>
         </div>
     </header>
 
-    <nav class="tabs">
-        <div class="tab active" data-target="rejstriky">
-            <span class="tab-icon">🏢</span>Rejstříky ČR
-        </div>
-        <div class="tab" data-target="mhd">
-            <span class="tab-icon">🚊</span>Pražská MHD
-        </div>
-        <div class="tab" data-target="faq">
-            <span class="tab-icon">❓</span>FAQ &amp; Tipy
-        </div>
-        <a class="tab" href="user-guide.html" style="text-decoration:none;">
-            <span class="tab-icon">📖</span>Uživatelský návod
+    <nav class="nav-links">
+        <a href="#prehled" class="active">
+            <span>🏢</span> Přehled
         </a>
-        <a class="tab" href="admin-guide.html" style="text-decoration:none;">
-            <span class="tab-icon">🛡️</span>Návod pro adminy
+        <a href="#prompty">
+            <span>💬</span> Příklady
+        </a>
+        <a href="#faq">
+            <span>❓</span> FAQ
+        </a>
+        <a href="user-guide.html">
+            <span>📖</span> Uživatelský návod
+        </a>
+        <a href="admin-guide.html">
+            <span>🛡️</span> Návod pro adminy
         </a>
     </nav>
 
     <main class="container">
 
         <!-- ═══════════════════════════════════════════ -->
-        <!-- REJSTŘÍKY ČR                                -->
+        <!-- PŘEHLED                                     -->
         <!-- ═══════════════════════════════════════════ -->
-        <div id="rejstriky" class="section active">
+        <section id="prehled">
             <h2><span class="emoji">🏢</span> Rejstříky ČR</h2>
             <p class="subtitle">
                 Agent pro české veřejné rejstříky — ARES, Registr smluv a insolvenční řízení.
@@ -381,7 +374,7 @@
                 <li class="yes">Kombinovat nástroje — „prověř firmu" = detail + insolvence + jednatelé + smlouvy</li>
             </ul>
 
-            <h3>Co agent neumí / nefunguje</h3>
+            <h3>Co agent neumí / omezení</h3>
             <ul class="feature-list">
                 <li class="no">Hledat fyzické osoby (pouze firmy s IČO)</li>
                 <li class="no">Zobrazit sbírku listin / výroční zprávy</li>
@@ -452,8 +445,13 @@
             <div class="callout callout-info">
                 <strong>Dva zdroje insolvencí:</strong> Rychlá kontrola <code>checkInsolvency</code> (ARES/CEÚ) vrací jen ano/ne. Pro detailní informace o řízení, dlužnících a dokumentech použijte Hlídač státu nástroje (<code>searchInsolvencyCases</code> / <code>getInsolvencyDetail</code>).
             </div>
+        </section>
 
-            <h3>Příklady promptů</h3>
+        <!-- ═══════════════════════════════════════════ -->
+        <!-- PŘÍKLADY PROMPTŮ                            -->
+        <!-- ═══════════════════════════════════════════ -->
+        <section id="prompty">
+            <h2><span class="emoji">💬</span> Příklady promptů</h2>
             <p class="subtitle">Kliknutím zkopírujete do schránky.</p>
 
             <h4>🔍 Vyhledávání firem</h4>
@@ -555,7 +553,12 @@
                     <span class="copy-hint">📋 kopírovat</span>
                 </div>
             </div>
+        </section>
 
+        <!-- ═══════════════════════════════════════════ -->
+        <!-- ZNÁMÉ PROBLÉMY                              -->
+        <!-- ═══════════════════════════════════════════ -->
+        <section>
             <h3>Známé problémy a omezení</h3>
             <div class="card">
                 <div class="card-title"><span class="status-partial">Pomalé odpovědi u kombinovaných dotazů</span></div>
@@ -573,220 +576,19 @@
                 <div class="card-title"><span class="status-info">Data z Hlídače státu — CC BY 3.0</span></div>
                 <p>Agent by měl na konci odpovědi uvádět zdroj „Hlídač státu, CC BY 3.0 CZ". Toto je licenční požadavek.</p>
             </div>
-        </div>
+        </section>
 
         <!-- ═══════════════════════════════════════════ -->
-        <!-- PRAŽSKÁ MHD                                 -->
+        <!-- FAQ                                         -->
         <!-- ═══════════════════════════════════════════ -->
-        <div id="mhd" class="section">
-            <h2><span class="emoji">🚊</span> Pražská MHD</h2>
-            <p class="subtitle">
-                Agent pro pražskou městskou hromadnou dopravu (PID). Real-time odjezdy, zastávky, linky, polohy vozidel a výluky.
-                Data z Golemio/PID.
-            </p>
-
-            <h3>Co agent umí</h3>
-            <ul class="feature-list">
-                <li class="yes">Zobrazit odjezdovou tabuli zastávky (real-time, včetně zpoždění)</li>
-                <li class="yes">Vyhledat zastávky podle názvu (i přibližného / skloňovaného)</li>
-                <li class="yes">Zobrazit informace o lince (typ, trasa, noční/regionální)</li>
-                <li class="yes">Sledovat polohy vozidel na lince v reálném čase</li>
-                <li class="yes">Zobrazit aktuální výluky a omezení provozu</li>
-                <li class="yes">Kombinovat nástroje — „situace na lince 22" = info + polohy + výluky</li>
-                <li class="partial">Navrhnout trasu z A do B (omezeně — nemá plánovač spojení, ale umí poradit)</li>
-            </ul>
-
-            <h3>Co agent neumí / nefunguje</h3>
-            <ul class="feature-list">
-                <li class="no">Vyhledat optimální spojení z A do B (nemá plánovač, jen navrhne na základě odjezdů)</li>
-                <li class="no"><strong>Zobrazit zastávky na lince</strong> — nástroj <code>getRouteStops</code> zatím není implementován</li>
-                <li class="no"><strong>Zobrazit jízdní řád zastávky</strong> — nástroj <code>getStopTimetable</code> zatím není implementován</li>
-                <li class="no">Zobrazit mapu / vizualizaci trasy</li>
-                <li class="no">Odpovídat na dotazy mimo pražskou MHD (odmítne)</li>
-            </ul>
-
-            <div class="callout callout-danger">
-                <strong>Pozor — nefunkční funkce:</strong> Pokud se zeptáte na „zastávky linky 250" nebo „jízdní řád zastávky Blatov", agent může odpovědět chybou nebo si data vymyslet, protože odpovídající nástroje (<code>getRouteStops</code>, <code>getStopTimetable</code>) <strong>zatím nejsou implementovány</strong>. Testujte prosím pouze funkce ze seznamu „Co agent umí" výše.
-            </div>
-
-            <h3>Dostupné nástroje</h3>
-            <table>
-                <thead>
-                    <tr><th>Nástroj</th><th>Popis</th></tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><code>getDepartureBoard</code></td>
-                        <td>Odjezdová tabule zastávky — real-time odjezdy, zpoždění, nástupiště</td>
-                    </tr>
-                    <tr>
-                        <td><code>searchStops</code></td>
-                        <td>Vyhledání zastávek podle názvu (podporuje skloňování)</td>
-                    </tr>
-                    <tr>
-                        <td><code>getRouteInfo</code></td>
-                        <td>Informace o lince — typ, trasa, noční/regionální, odkaz PID</td>
-                    </tr>
-                    <tr>
-                        <td><code>getVehiclePositions</code></td>
-                        <td>GPS polohy vozidel na lince — zpoždění, směr, poslední zastávka</td>
-                    </tr>
-                    <tr>
-                        <td><code>getServiceAlerts</code></td>
-                        <td>Aktuální výluky a provozní upozornění</td>
-                    </tr>
-                </tbody>
-            </table>
-
-            <table>
-                <thead>
-                    <tr><th>Nástroj</th><th>Stav</th></tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td><code>getRouteStops</code></td>
-                        <td style="color: var(--red);">❌ Není implementován — nevolat</td>
-                    </tr>
-                    <tr>
-                        <td><code>getStopTimetable</code></td>
-                        <td style="color: var(--red);">❌ Není implementován — nevolat</td>
-                    </tr>
-                </tbody>
-            </table>
-
-            <h3>Příklady promptů</h3>
-            <p class="subtitle">Kliknutím zkopírujete do schránky.</p>
-
-            <h4>🕐 Odjezdy</h4>
-            <div class="prompt-grid">
-                <div class="prompt" onclick="copyPrompt(this)">
-                    <div class="prompt-label">Odjezdy z Anděla</div>
-                    <div class="prompt-text">Kdy jede nejbližší spoj z Anděla?</div>
-                    <span class="copy-hint">📋 kopírovat</span>
-                </div>
-                <div class="prompt" onclick="copyPrompt(this)">
-                    <div class="prompt-label">Odjezdy — delší čas</div>
-                    <div class="prompt-text">Jaké spoje odjíždějí z Hlavního nádraží v příštích 20 minutách?</div>
-                    <span class="copy-hint">📋 kopírovat</span>
-                </div>
-                <div class="prompt" onclick="copyPrompt(this)">
-                    <div class="prompt-label">Metro z Muzea</div>
-                    <div class="prompt-text">Kdy jede metro z Muzea?</div>
-                    <span class="copy-hint">📋 kopírovat</span>
-                </div>
-                <div class="prompt" onclick="copyPrompt(this)">
-                    <div class="prompt-label">Odjezdy — skloňování</div>
-                    <div class="prompt-text">Kdy mi něco jede z Karlova náměstí?</div>
-                    <span class="copy-hint">📋 kopírovat</span>
-                </div>
-            </div>
-
-            <h4>🔍 Zastávky a linky</h4>
-            <div class="prompt-grid">
-                <div class="prompt" onclick="copyPrompt(this)">
-                    <div class="prompt-label">Hledání zastávky</div>
-                    <div class="prompt-text">Najdi zastávky v okolí stanice Muzeum</div>
-                    <span class="copy-hint">📋 kopírovat</span>
-                </div>
-                <div class="prompt" onclick="copyPrompt(this)">
-                    <div class="prompt-label">Info o lince</div>
-                    <div class="prompt-text">Zobraz informace o lince metra B</div>
-                    <span class="copy-hint">📋 kopírovat</span>
-                </div>
-                <div class="prompt" onclick="copyPrompt(this)">
-                    <div class="prompt-label">Info o tramvaji</div>
-                    <div class="prompt-text">Řekni mi něco o tramvajové lince 22</div>
-                    <span class="copy-hint">📋 kopírovat</span>
-                </div>
-                <div class="prompt" onclick="copyPrompt(this)">
-                    <div class="prompt-label">Info o autobusu</div>
-                    <div class="prompt-text">Jaká je to linka 119?</div>
-                    <span class="copy-hint">📋 kopírovat</span>
-                </div>
-            </div>
-
-            <h4>📍 Polohy vozidel</h4>
-            <div class="prompt-grid">
-                <div class="prompt" onclick="copyPrompt(this)">
-                    <div class="prompt-label">Polohy tramvaje</div>
-                    <div class="prompt-text">Kde právě jezdí tramvaj 22?</div>
-                    <span class="copy-hint">📋 kopírovat</span>
-                </div>
-                <div class="prompt" onclick="copyPrompt(this)">
-                    <div class="prompt-label">Polohy autobusu</div>
-                    <div class="prompt-text">Kde jede autobus 119?</div>
-                    <span class="copy-hint">📋 kopírovat</span>
-                </div>
-            </div>
-
-            <h4>🚧 Výluky</h4>
-            <div class="prompt-grid">
-                <div class="prompt" onclick="copyPrompt(this)">
-                    <div class="prompt-label">Aktuální výluky</div>
-                    <div class="prompt-text">Jaké jsou aktuální výluky v pražské MHD?</div>
-                    <span class="copy-hint">📋 kopírovat</span>
-                </div>
-                <div class="prompt" onclick="copyPrompt(this)">
-                    <div class="prompt-label">Situace na lince</div>
-                    <div class="prompt-text">Jaká je situace na lince 22? Ukaž info, polohy i výluky.</div>
-                    <span class="copy-hint">📋 kopírovat</span>
-                </div>
-            </div>
-
-            <h4>🗺️ Navigace (omezená)</h4>
-            <div class="prompt-grid">
-                <div class="prompt" onclick="copyPrompt(this)">
-                    <div class="prompt-label">Metro — přímý spoj</div>
-                    <div class="prompt-text">Jak se dostanu z Muzea na Zličín?</div>
-                    <span class="copy-hint">📋 kopírovat</span>
-                </div>
-                <div class="prompt" onclick="copyPrompt(this)">
-                    <div class="prompt-label">Metro — s přestupem</div>
-                    <div class="prompt-text">Jedu z Dejvické na Florenc</div>
-                    <span class="copy-hint">📋 kopírovat</span>
-                </div>
-            </div>
-
-            <div class="callout callout-warn">
-                <strong>Navigace je experimentální:</strong> Agent nemá plánovač spojení. Umí navrhnout trasu na základě znalosti metra a odjezdových tabulí, ale u složitějších tras (kombinace tramvaj + autobus) nemusí najít optimální řešení. Pro přesné spojení doporučujeme <a href="https://spojeni.pid.cz" style="color: var(--accent);">spojeni.pid.cz</a> nebo aplikaci PID Lítačka.
-            </div>
-
-            <h3>Známé problémy a omezení</h3>
-            <div class="card">
-                <div class="card-title"><span class="status-broken">getRouteStops — neimplementováno</span></div>
-                <p>Dotazy na „zastávky linky X" nebo „kudy jede linka X" nebudou fungovat. Nástroj je v plánu, ale zatím není hotov.</p>
-            </div>
-            <div class="card">
-                <div class="card-title"><span class="status-broken">getStopTimetable — neimplementováno</span></div>
-                <p>Dotazy na „jízdní řád zastávky" nebo „kdy jede linka z zastávky v pondělí" nebudou fungovat. K dispozici je pouze real-time odjezdová tabule (<code>getDepartureBoard</code>).</p>
-            </div>
-            <div class="card">
-                <div class="card-title"><span class="status-partial">Názvy zastávek</span></div>
-                <p>Server automaticky zpracovává české skloňování (např. „z Muzea" → hledá „Muzeum"). Ale u méně obvyklých názvů může selhat — zkuste zadat zastávku v 1. pádě.</p>
-            </div>
-            <div class="card">
-                <div class="card-title"><span class="status-info">Real-time data</span></div>
-                <p>Odjezdy a polohy vozidel jsou real-time z Golemio API. Mimo provozní hodiny (cca 0:30–4:30) bude odjezdová tabule prázdná — to je správné chování.</p>
-            </div>
-        </div>
-
-        <!-- ═══════════════════════════════════════════ -->
-        <!-- FAQ & TIPY                                  -->
-        <!-- ═══════════════════════════════════════════ -->
-        <div id="faq" class="section">
-            <h2><span class="emoji">❓</span> FAQ &amp; Tipy pro testování</h2>
-            <p class="subtitle">Odpovědi na časté otázky a tipy jak agenty efektivně testovat.</p>
-
-            <h3>Obecné</h3>
+        <section id="faq">
+            <h2><span class="emoji">❓</span> Často kladené otázky</h2>
+            <p class="subtitle">Odpovědi na časté dotazy ohledně agenta Rejstříky ČR.</p>
 
             <details>
-                <summary>Kde agenty najdu v M365 Copilotu?</summary>
+                <summary>Kde agenta najdu v M365 Copilotu?</summary>
                 <div class="detail-body">
-                    <p>Agenti se zobrazují v M365 Copilot chatu (Microsoft Teams nebo web). Po nahrání do tenanta je najdete přes ikonu <strong>@</strong> (zmínky) — začněte psát název agenta:</p>
-                    <ul>
-                        <li><strong>@Rejstříky ČR</strong> — agent pro české rejstříky</li>
-                        <li><strong>@Pražská MHD</strong> — agent pro pražskou dopravu</li>
-                    </ul>
+                    <p>Agent se zobrazuje v M365 Copilot chatu (Microsoft Teams nebo web). Najdete ho přes ikonu <strong>@</strong> (zmínky) — začněte psát <strong>@Rejstříky ČR</strong>.</p>
                     <p>Po zmínce agenta můžete rovnou psát svůj dotaz.</p>
                 </div>
             </details>
@@ -796,9 +598,9 @@
                 <div class="detail-body">
                     <p>Možné příčiny:</p>
                     <ul>
-                        <li><strong>Backend je nedostupný</strong> — MCP servery běží na Azure Container Apps. Pokud se dlouho nepoužívaly, může trvat pár sekund než se „probudí" (cold start).</li>
-                        <li><strong>API třetí strany nefunguje</strong> — ARES nebo Golemio API může být dočasně nedostupné.</li>
-                        <li><strong>Neplatný dotaz</strong> — zkuste přeformulovat nebo zadat konkrétní IČO / název zastávky.</li>
+                        <li><strong>Backend se probouzí</strong> — po delší neaktivitě může server potřebovat pár sekund na start.</li>
+                        <li><strong>API třetí strany nefunguje</strong> — ARES nebo Hlídač státu API může být dočasně nedostupné.</li>
+                        <li><strong>Neplatný dotaz</strong> — zkuste přeformulovat nebo zadat konkrétní IČO / název firmy.</li>
                     </ul>
                     <p>Zkuste dotaz zopakovat za minutu. Pokud problém přetrvává, kontaktujte správce.</p>
                 </div>
@@ -809,9 +611,9 @@
                 <div class="detail-body">
                     <p>Agent je nastavený tak, aby <strong>nepoužíval vlastní znalosti</strong> a čerpal pouze z API. Pokud si přesto vymýšlí:</p>
                     <ul>
-                        <li>Ověřte, že jste agenta zavolali přes <strong>@</strong> zmínku (ne obecný Copilot)</li>
+                        <li>Ověřte, že jste agenta zavolali přes <strong>@Rejstříky ČR</strong> (ne obecný Copilot)</li>
                         <li>Zkuste dotaz přeformulovat — někdy LLM „přeskočí" volání API</li>
-                        <li>Pokud se to děje opakovaně, nahlaste to — je to chyba, kterou chceme sledovat</li>
+                        <li>Pokud se to děje opakovaně, nahlaste to</li>
                     </ul>
                 </div>
             </details>
@@ -824,10 +626,8 @@
                 </div>
             </details>
 
-            <h3>Rejstříky ČR — tipy</h3>
-
             <details>
-                <summary>Jaké IČO použít pro testování?</summary>
+                <summary>Jaké IČO použít pro vyzkoušení?</summary>
                 <div class="detail-body">
                     <table>
                         <thead><tr><th>IČO</th><th>Firma</th><th>Zajímavé na ní</th></tr></thead>
@@ -846,7 +646,7 @@
                 <div class="detail-body">
                     <p>Nejspolehlivější je hledat podle IČO:</p>
                     <ul>
-                        <li>„Najdi smlouvy pro IČO 45274649" — agent použije <code>ico:45274649</code></li>
+                        <li>„Najdi smlouvy pro IČO 45274649"</li>
                         <li>Můžete hledat i textově: „Najdi smlouvy na dodávku elektřiny"</li>
                         <li>Pro další stránku řekněte: „Ukaž další stránku výsledků"</li>
                     </ul>
@@ -866,83 +666,16 @@
                     <p>Odpověď může trvat déle (15–30 s).</p>
                 </div>
             </details>
-
-            <h3>Pražská MHD — tipy</h3>
-
-            <details>
-                <summary>Jaké zastávky / linky použít pro test?</summary>
-                <div class="detail-body">
-                    <table>
-                        <thead><tr><th>Typ</th><th>Příklad</th><th>Proč</th></tr></thead>
-                        <tbody>
-                            <tr><td>Metro</td><td>Muzeum, Anděl, Florenc</td><td>Přestupní uzly, více linek</td></tr>
-                            <tr><td>Tramvaj</td><td>I.P.Pavlova, Karlovo náměstí</td><td>Hodně tramvají, rychlá odezva</td></tr>
-                            <tr><td>Autobus</td><td>Hlavní nádraží, Nádraží Veleslavín</td><td>Mix linek</td></tr>
-                            <tr><td>Linka metro</td><td>A, B, C</td><td>Jednoduchý test <code>getRouteInfo</code></td></tr>
-                            <tr><td>Linka tramvaj</td><td>22, 9, 17</td><td>Frekventované linky</td></tr>
-                            <tr><td>Linka autobus</td><td>119, 100, 191</td><td>Letiště, známé linky</td></tr>
-                        </tbody>
-                    </table>
-                </div>
-            </details>
-
-            <details>
-                <summary>Proč je odjezdová tabule prázdná?</summary>
-                <div class="detail-body">
-                    <p>Možné důvody:</p>
-                    <ul>
-                        <li><strong>Mimo provozní hodiny</strong> — noční pauza cca 0:30–4:30. To je správné chování.</li>
-                        <li><strong>Špatný název zastávky</strong> — zkuste přesný název (např. „I.P.Pavlova" místo „Pavlova").</li>
-                        <li><strong>API nedostupné</strong> — zkuste znovu za minutu.</li>
-                    </ul>
-                </div>
-            </details>
-
-            <details>
-                <summary>Jak funguje rozpoznávání skloňování?</summary>
-                <div class="detail-body">
-                    <p>Server automaticky generuje varianty názvu zastávky v 1. pádu (nominativ) z českého skloňování:</p>
-                    <ul>
-                        <li>„z Muzea" → hledá „Muzeum"</li>
-                        <li>„z Anděla" → hledá „Anděl"</li>
-                        <li>„z Karlova náměstí" → hledá „Karlovo náměstí"</li>
-                    </ul>
-                    <p>U méně běžných názvů to nemusí fungovat. V takovém případě zadejte zastávku v 1. pádě.</p>
-                </div>
-            </details>
-
-            <h3>Co testovat a hlásit</h3>
-            <div class="card">
-                <div class="card-title">📝 Při testování si prosím všímejte:</div>
-                <ul>
-                    <li>Zavolal agent správný nástroj / API?</li>
-                    <li>Jsou data v odpovědi správná? (Ověřte si na <a href="https://ares.gov.cz" style="color: var(--accent)">ares.gov.cz</a> nebo <a href="https://www.hlidacstatu.cz" style="color: var(--accent)">hlidacstatu.cz</a>)</li>
-                    <li>Je formátování přehledné? (tabulky, odrážky)</li>
-                    <li>Vymýšlel si agent data, která neměl?</li>
-                    <li>Jak dlouho trvala odpověď?</li>
-                    <li>Odmítl agent správně dotaz mimo svůj scope?</li>
-                </ul>
-            </div>
-        </div>
+        </section>
     </main>
 
     <footer>
         <div class="container">
-            Poslední aktualizace: únor 2026 · Data: ARES (ares.gov.cz), Hlídač státu (hlidacstatu.cz, CC BY 3.0 CZ), Golemio/PID
+            Poslední aktualizace: únor 2026 · Data: ARES (ares.gov.cz), Hlídač státu (hlidacstatu.cz, CC BY 3.0 CZ)
         </div>
     </footer>
 
     <script>
-        // Tab switching
-        document.querySelectorAll('.tab').forEach(tab => {
-            tab.addEventListener('click', () => {
-                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-                document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
-                tab.classList.add('active');
-                document.getElementById(tab.dataset.target).classList.add('active');
-            });
-        });
-
         // Copy prompt to clipboard
         function copyPrompt(el) {
             const text = el.querySelector('.prompt-text').textContent;
@@ -955,6 +688,15 @@
                 }, 1500);
             });
         }
+
+        // Smooth scroll for nav links
+        document.querySelectorAll('.nav-links a[href^="#"]').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const target = document.querySelector(link.getAttribute('href'));
+                if (target) target.scrollIntoView({ behavior: 'smooth' });
+            });
+        });
     </script>
 </body>
 </html>
