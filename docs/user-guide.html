@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Uživatelský návod — Rejstříky ČR</title>
+    <style>
+        :root {
+            --bg: #0d1117;
+            --surface: #161b22;
+            --surface2: #1c2333;
+            --border: #30363d;
+            --text: #e6edf3;
+            --text-muted: #8b949e;
+            --accent: #58a6ff;
+            --accent-hover: #79c0ff;
+            --green: #3fb950;
+            --red: #f85149;
+            --yellow: #d29922;
+            --purple: #bc8cff;
+            --card-radius: 12px;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+        }
+        .container { max-width: 780px; margin: 0 auto; padding: 0 24px; }
+
+        /* Header */
+        header {
+            background: linear-gradient(135deg, #0d1117 0%, #161b22 100%);
+            border-bottom: 1px solid var(--border);
+            padding: 48px 0 40px;
+            text-align: center;
+        }
+        header h1 { font-size: 2rem; font-weight: 700; margin-bottom: 8px; }
+        header h1 span { color: var(--accent); }
+        header p { color: var(--text-muted); font-size: 1.05rem; max-width: 600px; margin: 0 auto; }
+        .badge-row { margin-top: 16px; display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
+        .badge {
+            display: inline-block; padding: 4px 12px; border-radius: 20px;
+            font-size: 0.78rem; font-weight: 600; letter-spacing: 0.02em;
+        }
+        .badge-blue { background: rgba(88,166,255,0.15); color: var(--accent); border: 1px solid rgba(88,166,255,0.3); }
+        .badge-green { background: rgba(63,185,80,0.15); color: var(--green); border: 1px solid rgba(63,185,80,0.3); }
+        .badge-purple { background: rgba(188,140,255,0.15); color: var(--purple); border: 1px solid rgba(188,140,255,0.3); }
+
+        .back-link {
+            display: inline-block; margin: 24px 0 0; font-size: 0.9rem;
+            color: var(--accent); text-decoration: none;
+        }
+        .back-link:hover { text-decoration: underline; }
+
+        /* Article */
+        article { padding: 40px 0 60px; }
+        h2 { font-size: 1.5rem; margin: 40px 0 12px; color: var(--text); border-bottom: 1px solid var(--border); padding-bottom: 8px; }
+        h3 { font-size: 1.15rem; margin: 28px 0 10px; color: var(--accent); }
+        h4 { font-size: 1rem; margin: 22px 0 8px; color: var(--text); }
+        p { margin-bottom: 14px; color: var(--text-muted); font-size: 0.95rem; }
+        ol, ul { padding-left: 24px; margin-bottom: 16px; }
+        li { margin-bottom: 6px; color: var(--text-muted); font-size: 0.95rem; }
+        li strong { color: var(--text); }
+        a { color: var(--accent); }
+
+        /* Feature list */
+        .feature-list { list-style: none; padding: 0; }
+        .feature-list li { padding: 8px 0 8px 28px; position: relative; color: var(--text-muted); font-size: 0.95rem; }
+        .feature-list li::before { position: absolute; left: 0; font-size: 0.92rem; }
+        .feature-list li.yes::before { content: "✅"; }
+        .feature-list li.no::before { content: "❌"; }
+        .feature-list li.info::before { content: "💡"; }
+
+        /* Cards */
+        .card {
+            background: var(--surface); border: 1px solid var(--border);
+            border-radius: var(--card-radius); padding: 20px 24px; margin-bottom: 16px;
+        }
+        .card-title { font-weight: 600; font-size: 1.05rem; margin-bottom: 6px; display: flex; align-items: center; gap: 8px; }
+        .card p, .card li { color: var(--text-muted); font-size: 0.92rem; }
+        .card ul { padding-left: 20px; margin-top: 6px; }
+
+        /* Prompt examples */
+        .prompt-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        @media (max-width: 640px) { .prompt-grid { grid-template-columns: 1fr; } }
+        .prompt {
+            background: var(--surface2); border: 1px solid var(--border);
+            border-radius: 10px; padding: 14px 16px; cursor: pointer;
+            transition: border-color 0.2s; position: relative;
+        }
+        .prompt:hover { border-color: var(--accent); }
+        .prompt-label { font-size: 0.72rem; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted); margin-bottom: 4px; font-weight: 600; }
+        .prompt-text { font-size: 0.92rem; color: var(--text); }
+        .prompt .copy-hint { position: absolute; top: 8px; right: 10px; font-size: 0.7rem; color: var(--text-muted); opacity: 0; transition: opacity 0.2s; }
+        .prompt:hover .copy-hint { opacity: 1; }
+        .prompt.copied .copy-hint { color: var(--green); opacity: 1; }
+
+        /* Callout */
+        .callout { border-radius: 8px; padding: 14px 18px; margin: 16px 0; font-size: 0.9rem; }
+        .callout-tip { background: rgba(63,185,80,0.08); border-left: 3px solid var(--green); }
+        .callout-tip strong { color: var(--green); }
+        .callout-warn { background: rgba(210,153,34,0.08); border-left: 3px solid var(--yellow); }
+        .callout-warn strong { color: var(--yellow); }
+        .callout-info { background: rgba(88,166,255,0.08); border-left: 3px solid var(--accent); }
+        .callout-info strong { color: var(--accent); }
+
+        /* Table */
+        table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 0.9rem; }
+        th, td { padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--border); }
+        th { background: var(--surface2); color: var(--text-muted); font-weight: 600; font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.04em; }
+        td { color: var(--text-muted); }
+        td code { background: var(--surface2); padding: 2px 6px; border-radius: 4px; font-size: 0.85rem; color: var(--accent); }
+
+        /* Code */
+        code { background: var(--surface2); padding: 2px 6px; border-radius: 4px; font-size: 0.88rem; color: var(--accent); }
+
+        /* FAQ */
+        details { background: var(--surface); border: 1px solid var(--border); border-radius: var(--card-radius); margin-bottom: 8px; }
+        details summary { padding: 14px 18px; cursor: pointer; font-weight: 600; font-size: 0.95rem; list-style: none; }
+        details summary::before { content: "▸ "; color: var(--text-muted); }
+        details[open] summary::before { content: "▾ "; }
+        details .detail-body { padding: 0 18px 14px; font-size: 0.9rem; color: var(--text-muted); }
+        details .detail-body p { margin-bottom: 8px; }
+
+        /* Footer */
+        footer { border-top: 1px solid var(--border); padding: 24px 0; text-align: center; color: var(--text-muted); font-size: 0.82rem; }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="container">
+            <h1>🏢 Rejstříky <span>ČR</span></h1>
+            <p>Uživatelský návod k agentovi pro české veřejné rejstříky v M365 Copilot</p>
+            <div class="badge-row">
+                <span class="badge badge-blue">ARES</span>
+                <span class="badge badge-green">Registr smluv</span>
+                <span class="badge badge-purple">Insolvence</span>
+            </div>
+            <a href="index.html" class="back-link">← Zpět na přehled agentů</a>
+        </div>
+    </header>
+
+    <article>
+        <div class="container">
+
+            <!-- ================================ -->
+            <!-- CO JE REJSTŘÍKY ČR              -->
+            <!-- ================================ -->
+            <h2>Co je Rejstříky ČR?</h2>
+            <p>
+                <strong>Rejstříky ČR</strong> je agent pro M365 Copilot, který vám umožní vyhledávat informace
+                o českých firmách, smlouvách a insolvencích přímo v prostředí Microsoft 365. Místo procházení
+                několika webových portálů se stačí zeptat přirozeným jazykem.
+            </p>
+            <p>Agent čerpá data výhradně z oficiálních zdrojů:</p>
+            <ul>
+                <li><strong>ARES</strong> (ares.gov.cz) — Administrativní registr ekonomických subjektů (Ministerstvo financí ČR)</li>
+                <li><strong>Registr smluv</strong> — veřejné smlouvy státních institucí (přes Hlídač státu)</li>
+                <li><strong>Insolvenční rejstřík</strong> — insolvenční řízení (přes ARES CEÚ a Hlídač státu)</li>
+            </ul>
+
+            <div class="callout callout-tip">
+                <strong>Agent si nevymýšlí.</strong> Všechna data pocházejí z API výše uvedených zdrojů. Pokud informaci nenajde, řekne vám to — místo toho, aby si ji vymyslel.
+            </div>
+
+            <!-- ================================ -->
+            <!-- JAK ZAČÍT                        -->
+            <!-- ================================ -->
+            <h2>Jak začít</h2>
+            <ol>
+                <li>Otevřete <strong>M365 Copilot</strong> (v Teams nebo na webu <a href="https://m365.cloud.microsoft/chat" target="_blank">m365.cloud.microsoft/chat</a>)</li>
+                <li>Do pole pro zprávy napište <strong>@Rejstříky ČR</strong></li>
+                <li>Za zmínkou agenta napište svůj dotaz, např. <em>„Najdi firmu Alza"</em></li>
+                <li>Agent zavolá příslušné API a vrátí vám strukturovanou odpověď</li>
+            </ol>
+
+            <div class="callout callout-info">
+                <strong>Důležité:</strong> Agenta je nutné vždy zavolat přes <strong>@Rejstříky ČR</strong>. Pokud napíšete dotaz do obecného Copilotu bez zmínky agenta, nedostanete data z rejstříků.
+            </div>
+
+            <!-- ================================ -->
+            <!-- CO AGENT UMÍ                     -->
+            <!-- ================================ -->
+            <h2>Co agent umí</h2>
+
+            <h3>🔍 Vyhledávání firem</h3>
+            <p>Hledejte firmy podle názvu, IČO, města nebo ulice. Agent prohledá databázi ARES a vrátí seznam odpovídajících firem.</p>
+            <div class="prompt-grid">
+                <div class="prompt" onclick="copyPrompt(this)">
+                    <div class="prompt-label">Hledání dle názvu</div>
+                    <div class="prompt-text">Najdi firmy s názvem Alza</div>
+                    <span class="copy-hint">📋 kopírovat</span>
+                </div>
+                <div class="prompt" onclick="copyPrompt(this)">
+                    <div class="prompt-label">Hledání dle IČO</div>
+                    <div class="prompt-text">Najdi firmu s IČO 27082440</div>
+                    <span class="copy-hint">📋 kopírovat</span>
+                </div>
+                <div class="prompt" onclick="copyPrompt(this)">
+                    <div class="prompt-label">Hledání dle města</div>
+                    <div class="prompt-text">Najdi firmy v Brně s názvem Kiwi</div>
+                    <span class="copy-hint">📋 kopírovat</span>
+                </div>
+                <div class="prompt" onclick="copyPrompt(this)">
+                    <div class="prompt-label">Hledání dle ulice</div>
+                    <div class="prompt-text">Najdi firmy na Václavském náměstí v Praze</div>
+                    <span class="copy-hint">📋 kopírovat</span>
+                </div>
+            </div>
+
+            <h3>📋 Detail firmy</h3>
+            <p>U každé firmy zjistíte kompletní profil: sídlo, právní forma, datum vzniku, DIČ, CZ-NACE klasifikace, registrace a další údaje.</p>
+            <div class="prompt-grid">
+                <div class="prompt" onclick="copyPrompt(this)">
+                    <div class="prompt-label">Kompletní detail</div>
+                    <div class="prompt-text">Zjisti kompletní detaily firmy s IČO 27082440</div>
+                    <span class="copy-hint">📋 kopírovat</span>
+                </div>
+                <div class="prompt" onclick="copyPrompt(this)">
+                    <div class="prompt-label">Jednatelé a představenstvo</div>
+                    <div class="prompt-text">Kdo jsou jednatelé firmy s IČO 25788001?</div>
+                    <span class="copy-hint">📋 kopírovat</span>
+                </div>
+                <div class="prompt" onclick="copyPrompt(this)">
+                    <div class="prompt-label">Živnostenská oprávnění</div>
+                    <div class="prompt-text">Jaké živnosti má firma s IČO 27082440?</div>
+                    <span class="copy-hint">📋 kopírovat</span>
+                </div>
+            </div>
+
+            <h3>🔎 Prověření firmy</h3>
+            <p>Jedním dotazem získáte kompletní přehled: detail firmy, kontrolu insolvence, jednatelé a smlouvy.</p>
+            <div class="prompt-grid">
+                <div class="prompt" onclick="copyPrompt(this)">
+                    <div class="prompt-label">Kompletní prověrka</div>
+                    <div class="prompt-text">Prověř firmu s IČO 25788001 — detail, insolvence, smlouvy, jednatelé</div>
+                    <span class="copy-hint">📋 kopírovat</span>
+                </div>
+                <div class="prompt" onclick="copyPrompt(this)">
+                    <div class="prompt-label">Prověrka podle názvu</div>
+                    <div class="prompt-text">Prověř firmu Alza — najdi ji, zjisti detail, ověř insolvenci a jednatelé</div>
+                    <span class="copy-hint">📋 kopírovat</span>
+                </div>
+            </div>
+            <div class="callout callout-warn">
+                <strong>Upozornění:</strong> Kompletní prověrka volá 4 API najednou, takže odpověď může trvat 15–30 sekund. Buďte trpěliví.
+            </div>
+
+            <h3>⚖️ Kontrola insolvence</h3>
+            <p>Rychle ověřte, zda je firma v insolvenci, nebo vyhledejte detailní informace o insolvenčních řízeních.</p>
+            <div class="prompt-grid">
+                <div class="prompt" onclick="copyPrompt(this)">
+                    <div class="prompt-label">Rychlá kontrola (ano/ne)</div>
+                    <div class="prompt-text">Ověř insolvenci pro IČO 27074358</div>
+                    <span class="copy-hint">📋 kopírovat</span>
+                </div>
+                <div class="prompt" onclick="copyPrompt(this)">
+                    <div class="prompt-label">Detailní hledání</div>
+                    <div class="prompt-text">Vyhledej insolvenční řízení pro firmu Optim Trade</div>
+                    <span class="copy-hint">📋 kopírovat</span>
+                </div>
+                <div class="prompt" onclick="copyPrompt(this)">
+                    <div class="prompt-label">Detail řízení</div>
+                    <div class="prompt-text">Ukaž detail insolvenčního řízení INS 10525/2016</div>
+                    <span class="copy-hint">📋 kopírovat</span>
+                </div>
+            </div>
+            <div class="callout callout-info">
+                <strong>Dva zdroje insolvencí:</strong> Rychlá kontrola (ARES) vrátí jen ano/ne. Pro detailní informace o průběhu řízení, dlužnících a dokumentech jsou k dispozici podrobnější data z Hlídače státu.
+            </div>
+
+            <h3>💰 Registr smluv</h3>
+            <p>Prohledávejte veřejné smlouvy státních institucí — podle IČO nebo volným textem.</p>
+            <div class="prompt-grid">
+                <div class="prompt" onclick="copyPrompt(this)">
+                    <div class="prompt-label">Smlouvy podle IČO</div>
+                    <div class="prompt-text">Najdi smlouvy v Registru smluv pro IČO 45274649</div>
+                    <span class="copy-hint">📋 kopírovat</span>
+                </div>
+                <div class="prompt" onclick="copyPrompt(this)">
+                    <div class="prompt-label">Smlouvy podle textu</div>
+                    <div class="prompt-text">Najdi smlouvy na dodávku IT služeb pro Ministerstvo financí</div>
+                    <span class="copy-hint">📋 kopírovat</span>
+                </div>
+                <div class="prompt" onclick="copyPrompt(this)">
+                    <div class="prompt-label">Detail smlouvy</div>
+                    <div class="prompt-text">Ukaž detail smlouvy s ID 36796977</div>
+                    <span class="copy-hint">📋 kopírovat</span>
+                </div>
+                <div class="prompt" onclick="copyPrompt(this)">
+                    <div class="prompt-label">Další stránka</div>
+                    <div class="prompt-text">Ukaž další stránku výsledků</div>
+                    <span class="copy-hint">📋 kopírovat</span>
+                </div>
+            </div>
+
+            <h3>🏠 Validace adres</h3>
+            <p>Ověřte, zda česká adresa existuje v registru RÚIAN.</p>
+            <div class="prompt-grid">
+                <div class="prompt" onclick="copyPrompt(this)">
+                    <div class="prompt-label">Ověření adresy</div>
+                    <div class="prompt-text">Ověř adresu: Praha, Václavské náměstí 837</div>
+                    <span class="copy-hint">📋 kopírovat</span>
+                </div>
+            </div>
+
+            <!-- ================================ -->
+            <!-- PŘEHLED NÁSTROJŮ                 -->
+            <!-- ================================ -->
+            <h2>Přehled nástrojů</h2>
+            <p>Agent má k dispozici 10 nástrojů ze dvou datových zdrojů:</p>
+
+            <h3>ARES (Ministerstvo financí ČR)</h3>
+            <table>
+                <thead><tr><th>Nástroj</th><th>Co dělá</th></tr></thead>
+                <tbody>
+                    <tr><td><code>searchCompanies</code></td><td>Vyhledání firem dle názvu, IČO, města, ulice</td></tr>
+                    <tr><td><code>getCompanyDetail</code></td><td>Kompletní profil firmy podle IČO</td></tr>
+                    <tr><td><code>getCompanyOfficers</code></td><td>Statutární orgány (jednatelé, představenstvo, společníci)</td></tr>
+                    <tr><td><code>getTradeLicenses</code></td><td>Živnostenská oprávnění firmy</td></tr>
+                    <tr><td><code>checkInsolvency</code></td><td>Rychlá kontrola insolvence (ano/ne)</td></tr>
+                    <tr><td><code>validateAddress</code></td><td>Ověření adresy proti RÚIAN</td></tr>
+                </tbody>
+            </table>
+
+            <h3>Hlídač státu</h3>
+            <table>
+                <thead><tr><th>Nástroj</th><th>Co dělá</th></tr></thead>
+                <tbody>
+                    <tr><td><code>searchContracts</code></td><td>Hledání smluv v Registru smluv</td></tr>
+                    <tr><td><code>getContractDetail</code></td><td>Detail smlouvy — strany, částky, přílohy</td></tr>
+                    <tr><td><code>searchInsolvencyCases</code></td><td>Podrobné hledání insolvenčních řízení</td></tr>
+                    <tr><td><code>getInsolvencyDetail</code></td><td>Detail insolvence — dlužníci, správci, dokumenty</td></tr>
+                </tbody>
+            </table>
+
+            <!-- ================================ -->
+            <!-- CO AGENT NEUMÍ                   -->
+            <!-- ================================ -->
+            <h2>Co agent neumí</h2>
+            <ul class="feature-list">
+                <li class="no">Hledat fyzické osoby (pouze firmy s IČO)</li>
+                <li class="no">Zobrazit sbírku listin nebo výroční zprávy</li>
+                <li class="no">Přistupovat ke katastru nemovitostí</li>
+                <li class="no">Odpovídat na dotazy mimo české rejstříky (odmítne)</li>
+            </ul>
+
+            <!-- ================================ -->
+            <!-- TIPY PRO POUŽÍVÁNÍ               -->
+            <!-- ================================ -->
+            <h2>Tipy pro efektivní používání</h2>
+
+            <div class="card">
+                <div class="card-title">💡 IČO vždy 8 číslic</div>
+                <p>IČO musí mít 8 číslic. Pokud znáte kratší číslo (např. „123456"), doplňte nuly na začátek: „00123456". Agent by měl nuly doplnit automaticky, ale ne vždy to udělá.</p>
+            </div>
+
+            <div class="card">
+                <div class="card-title">💡 Buďte konkrétní</div>
+                <p>Čím přesnější dotaz, tím lepší výsledek. Místo „najdi nějakou firmu" zkuste „najdi firmy s názvem Škoda v Mladé Boleslavi".</p>
+            </div>
+
+            <div class="card">
+                <div class="card-title">💡 Kombinujte dotazy</div>
+                <p>Zeptejte se na více věcí najednou: „Prověř firmu s IČO 25788001 — zjisti detail, ověř insolvenci a najdi smlouvy." Agent zavolá více nástrojů naráz.</p>
+            </div>
+
+            <div class="card">
+                <div class="card-title">💡 Stránkování výsledků</div>
+                <p>Smlouvy a insolvence se zobrazují po 25 výsledcích. Pro další stránku řekněte: „Ukaž další stránku výsledků."</p>
+            </div>
+
+            <div class="card">
+                <div class="card-title">💡 Navigace v konverzaci</div>
+                <p>Můžete navazovat na předchozí odpovědi: „Teď mi ukaž jednatelé téhle firmy" nebo „Má tato firma nějaké smlouvy?"</p>
+            </div>
+
+            <!-- ================================ -->
+            <!-- TESTOVACÍ IČO                    -->
+            <!-- ================================ -->
+            <h2>IČO pro vyzkoušení</h2>
+            <table>
+                <thead><tr><th>IČO</th><th>Firma</th><th>Co vyzkoušíte</th></tr></thead>
+                <tbody>
+                    <tr><td><code>27082440</code></td><td>Alza.cz a.s.</td><td>Velká firma, hodně smluv, bohatý profil</td></tr>
+                    <tr><td><code>45274649</code></td><td>ČEZ, a.s.</td><td>Státní firma, stovky smluv v Registru smluv</td></tr>
+                    <tr><td><code>25788001</code></td><td>Kiwi.com s.r.o.</td><td>Tech firma, zajímavý profil jednatelů</td></tr>
+                    <tr><td><code>27074358</code></td><td>(test insolvence)</td><td>Záznamy v insolvenčním rejstříku</td></tr>
+                    <tr><td><code>00075370</code></td><td>Hlavní město Praha</td><td>Město s obrovským množstvím smluv</td></tr>
+                </tbody>
+            </table>
+
+            <!-- ================================ -->
+            <!-- FAQ                              -->
+            <!-- ================================ -->
+            <h2>Časté otázky</h2>
+
+            <details>
+                <summary>Agent neodpovídá nebo vrací chybu</summary>
+                <div class="detail-body">
+                    <p>Možné příčiny:</p>
+                    <ul>
+                        <li><strong>Backend se probouzí</strong> — po delší neaktivitě může server potřebovat pár sekund na start.</li>
+                        <li><strong>ARES/Hlídač státu je nedostupný</strong> — externí API může být dočasně mimo provoz.</li>
+                        <li><strong>Neplatný dotaz</strong> — zkuste přeformulovat nebo zadat konkrétní IČO.</li>
+                    </ul>
+                    <p>Zkuste dotaz zopakovat za minutu. Pokud problém přetrvává, kontaktujte správce.</p>
+                </div>
+            </details>
+
+            <details>
+                <summary>Agent si vymýšlí data — jak to poznám?</summary>
+                <div class="detail-body">
+                    <p>Agent je nastavený tak, aby čerpal <strong>pouze z API</strong>. Pokud odpověď obsahuje konkrétní data v tabulkách s IČO, adresami a čísly, pochází z API. Pokud je odpověď vágní a obecná, agent pravděpodobně API nezavolal.</p>
+                    <p><strong>Řešení:</strong> Ujistěte se, že jste agenta zavolali přes <strong>@Rejstříky ČR</strong> (ne obecný Copilot). Zkuste dotaz přeformulovat.</p>
+                </div>
+            </details>
+
+            <details>
+                <summary>Jak dlouho trvá odpověď?</summary>
+                <div class="detail-body">
+                    <p>Jednoduchý dotaz (hledání firmy, detail): <strong>3–10 sekund</strong>.</p>
+                    <p>Kombinovaný dotaz (prověření firmy): <strong>15–30 sekund</strong> (volá 4 API současně).</p>
+                </div>
+            </details>
+
+            <details>
+                <summary>Co znamenají data z Hlídače státu?</summary>
+                <div class="detail-body">
+                    <p>Registr smluv a podrobné insolvence pocházejí z <a href="https://www.hlidacstatu.cz" target="_blank">Hlídače státu</a> (Frank Bold, z.s.p.o.). Tato data jsou licencována pod <strong>CC BY 3.0 CZ</strong>. Agent by měl u těchto odpovědí uvádět zdroj.</p>
+                </div>
+            </details>
+
+            <details>
+                <summary>Mohu agenta použít pro právní rozhodování?</summary>
+                <div class="detail-body">
+                    <p><strong>Ne.</strong> Data mají informativní charakter a nenahrazují výpis z veřejného rejstříku. Pro právně závazné informace použijte přímo <a href="https://or.justice.cz" target="_blank">or.justice.cz</a> nebo <a href="https://ares.gov.cz" target="_blank">ares.gov.cz</a>.</p>
+                </div>
+            </details>
+
+            <details>
+                <summary>Agent mi řekl, že toto neumí — co dělat?</summary>
+                <div class="detail-body">
+                    <p>Agent je záměrně omezený na české rejstříky. Pokud se ptáte na něco mimo jeho scope (počasí, emaily, zahraniční firmy), odmítne odpovědět. To je správné chování — ne chyba.</p>
+                </div>
+            </details>
+
+            <!-- ================================ -->
+            <!-- ZDROJE DAT                       -->
+            <!-- ================================ -->
+            <h2>Zdroje dat</h2>
+            <div class="card">
+                <div class="card-title">📊 Datové zdroje</div>
+                <ul>
+                    <li><strong>ARES</strong> — <a href="https://ares.gov.cz" target="_blank">ares.gov.cz</a> — Ministerstvo financí ČR</li>
+                    <li><strong>Hlídač státu</strong> — <a href="https://www.hlidacstatu.cz" target="_blank">hlidacstatu.cz</a> — Frank Bold, CC BY 3.0 CZ</li>
+                    <li><strong>RÚIAN</strong> — Registr územní identifikace, adres a nemovitostí (přes ARES)</li>
+                    <li><strong>CEÚ</strong> — Centrální evidence úpadců (přes ARES)</li>
+                </ul>
+            </div>
+
+        </div>
+    </article>
+
+    <footer>
+        <div class="container">
+            Poslední aktualizace: únor 2026 · Data: ARES (ares.gov.cz), Hlídač státu (hlidacstatu.cz, CC BY 3.0 CZ)
+        </div>
+    </footer>
+
+    <script>
+        function copyPrompt(el) {
+            const text = el.querySelector('.prompt-text').textContent;
+            navigator.clipboard.writeText(text).then(() => {
+                el.classList.add('copied');
+                el.querySelector('.copy-hint').textContent = '✓ zkopírováno';
+                setTimeout(() => {
+                    el.classList.remove('copied');
+                    el.querySelector('.copy-hint').textContent = '📋 kopírovat';
+                }, 1500);
+            });
+        }
+    </script>
+</body>
+</html>
