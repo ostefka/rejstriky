@@ -1,0 +1,26 @@
+{
+  "name": "ares-mcp-server",
+  "version": "3.3.6",
+  "type": "module",
+  "main": "dist/server.js",
+  "scripts": {
+    "dev": "tsx src/server.ts",
+    "build": "tsc",
+    "start": "node dist/server.js"
+  },
+  "keywords": ["mcp", "ares", "czech-republic"],
+  "author": "",
+  "license": "ISC",
+  "description": "MCP server for Czech ARES business registry API",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.26.0",
+    "express": "^5.2.1",
+    "zod": "^4.3.6"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.6",
+    "@types/node": "^25.2.3",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3"
+  }
+}
