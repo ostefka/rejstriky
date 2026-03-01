@@ -25,15 +25,28 @@ async def search_documents(
     try:
         search_client = request.app.state.search
 
-        result = await search_client.hybrid_search(
-            INDEX,
-            search=q,
-            select=SELECT_FIELDS,
-            top=max_results,
-            semantic_config=SEMANTIC_CONFIG,
-            answers="extractive|count-3",
-            captions="extractive|highlight-true",
-        )
+        try:
+            result = await search_client.hybrid_search(
+                INDEX,
+                search=q,
+                select=SELECT_FIELDS,
+                top=max_results,
+                semantic_config=SEMANTIC_CONFIG,
+                answers="extractive|count-3",
+                captions="extractive|highlight-true",
+            )
+        except SearchError:
+            # Vectorizer rate-limited (429) — fall back to keyword + semantic (no vector)
+            log.warning("hybrid_fallback", query=q)
+            result = await search_client.search(
+                INDEX,
+                search=q,
+                select=SELECT_FIELDS,
+                top=max_results,
+                semantic_config=SEMANTIC_CONFIG,
+                answers="extractive|count-3",
+                captions="extractive|highlight-true",
+            )
 
         # Format chunks
         chunks = []

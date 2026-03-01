@@ -14,7 +14,7 @@ from .routes import drugs, pharmacies, documents
 from .search_client import SearchClient
 from .logger import setup_logging, log
 
-VERSION = "1.6.0"
+VERSION = "1.6.1"
 
 
 @asynccontextmanager

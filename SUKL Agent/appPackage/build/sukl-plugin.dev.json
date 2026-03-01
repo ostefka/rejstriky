@@ -57,6 +57,19 @@
           }
         }
       }
+    },
+    {
+      "name": "searchDocuments",
+      "description": "AI vyhledávání v plných textech SPC dokumentů — nežádoucí účinky, kontraindikace, lékové interakce, dávkování, těhotenství, farmakologie, uchovávání, předávkování.",
+      "capabilities": {
+        "response_semantics": {
+          "data_path": "$.results",
+          "properties": {
+            "title": "$.title",
+            "subtitle": "$.drugCodes"
+          }
+        }
+      }
     }
   ],
   "runtimes": [
@@ -66,7 +79,7 @@
         "type": "ApiKeyPluginVault",
         "reference_id": "74962cc6-8678-48fc-835b-fd09546355e5"
       },
-      "run_for_functions": ["searchDrugs", "getDrugDetail", "searchPharmacies", "getPharmacyDetail"],
+      "run_for_functions": ["searchDrugs", "getDrugDetail", "searchPharmacies", "getPharmacyDetail", "searchDocuments"],
       "spec": {
         "url": "sukl-openapi.json"
       }

@@ -61,6 +61,8 @@ class SearchClient:
         query_type: str = "semantic",
         semantic_config: str | None = None,
         count: bool = True,
+        answers: str | None = None,
+        captions: str | None = None,
     ) -> dict[str, Any]:
         """Execute a search query against an index with auto-retry."""
 
@@ -79,6 +81,10 @@ class SearchClient:
             body["orderby"] = order_by
         if semantic_config and query_type == "semantic":
             body["semanticConfiguration"] = semantic_config
+        if answers:
+            body["answers"] = answers
+        if captions:
+            body["captions"] = captions
 
         url = f"/indexes/{index}/docs/search?api-version=2024-07-01"
         self._refresh_token()
