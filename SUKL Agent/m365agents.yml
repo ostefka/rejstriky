@@ -1,0 +1,67 @@
+# yaml-language-server: $schema=https://aka.ms/m365-agents-toolkits/v1.9/yaml.schema.json
+# Visit https://aka.ms/teamsfx-v5.0-guide for details on this file
+# Visit https://aka.ms/teamsfx-actions for details on actions
+version: v1.9
+
+environmentFolderPath: ./env
+
+# Triggered when 'teamsapp provision' is executed
+provision:
+  - uses: teamsApp/create
+    with:
+      name: SÚKL Léčiva
+    writeToEnvironmentFile:
+      teamsAppId: TEAMS_APP_ID
+
+  - uses: apiKey/register
+    with:
+      name: apiKey
+      appId: ${{TEAMS_APP_ID}}
+      apiSpecPath: ./appPackage/sukl-openapi.json
+      primaryClientSecret: ${{SECRET_SUKL_API_KEY}}
+    writeToEnvironmentFile:
+      registrationId: SUKL_API_KEY_REGISTRATION_ID
+
+  - uses: teamsApp/zipAppPackage
+    with:
+      manifestPath: ./appPackage/manifest.json
+      outputZipPath: ./appPackage/build/SUKLLeciva.zip
+      outputFolder: ./appPackage/build
+
+  - uses: teamsApp/validateAppPackage
+    with:
+      appPackagePath: ./appPackage/build/SUKLLeciva.zip
+
+  - uses: teamsApp/update
+    with:
+      appPackagePath: ./appPackage/build/SUKLLeciva.zip
+
+  - uses: teamsApp/extendToM365
+    with:
+      appPackagePath: ./appPackage/build/SUKLLeciva.zip
+    writeToEnvironmentFile:
+      titleId: M365_TITLE_ID
+      appId: M365_APP_ID
+
+# Triggered when 'teamsapp publish' is executed
+publish:
+  - uses: teamsApp/zipAppPackage
+    with:
+      manifestPath: ./appPackage/manifest.json
+      outputZipPath: ./appPackage/build/SUKLLeciva.zip
+      outputFolder: ./appPackage/build
+
+  - uses: teamsApp/validateAppPackage
+    with:
+      appPackagePath: ./appPackage/build/SUKLLeciva.zip
+
+  - uses: teamsApp/update
+    with:
+      appPackagePath: ./appPackage/build/SUKLLeciva.zip
+
+  - uses: teamsApp/publishAppPackage
+    with:
+      appPackagePath: ./appPackage/build/SUKLLeciva.zip
+    writeToEnvironmentFile:
+      publishedAppId: TEAMS_APP_PUBLISHED_APP_ID
+projectId: 0b012982-b380-42a6-a82a-35dc111c1763

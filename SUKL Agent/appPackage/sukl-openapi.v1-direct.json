@@ -1,0 +1,351 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "SÚKL – Databáze léčiv a lékáren",
+    "description": "Vyhledávání léčivých přípravků a lékáren v databázi SÚKL (Státní ústav pro kontrolu léčiv).",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://search-airlift-s1.search.windows.net"
+    }
+  ],
+  "security": [
+    {
+      "apiKey": []
+    }
+  ],
+  "paths": {
+    "/indexes/sukl-drugs/docs": {
+      "get": {
+        "operationId": "searchDrugs",
+        "summary": "Vyhledání léčivých přípravků",
+        "description": "Fulltextové a sémantické vyhledávání léčivých přípravků v databázi SÚKL. Hledej podle názvu léku, účinné látky, ATC kódu, držitele registrace nebo indikační skupiny. Používej český text bez diakritiky i s ní.",
+        "parameters": [
+          {
+            "name": "search",
+            "in": "query",
+            "required": true,
+            "description": "Hledaný text — název léku, účinná látka, ATC kód, indikace. Použij * pro všechny záznamy (s filtrem).",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "$top",
+            "in": "query",
+            "description": "Počet výsledků (max 50, výchozí 10).",
+            "schema": { "type": "integer", "default": 10 }
+          },
+          {
+            "name": "$filter",
+            "in": "query",
+            "description": "OData filtr. Příklady: atc eq 'N02BE01', drzitelKod eq 'ZNB', vydej eq 'F', doping eq true, dodavky eq 'S'. Pole pro filtrování: kodSukl, nazev, sila, forma, formaNazev, cesta, cestaNazev, obal, drzitelKod, drzitelNazev, drzitelZeme, regCislo, stavRegistrace, atc, atcNazev, vydej, dodavky, indikacniSkupina, doping, ean, platnostDo.",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "$select",
+            "in": "query",
+            "description": "Čárkou oddělená pole k vrácení. Dostupná pole: kodSukl, nazev, doplnekNazvu, sila, forma, formaNazev, baleni, cesta, cestaNazev, obal, obalNazev, drzitelKod, drzitelNazev, drzitelZeme, regCislo, stavRegistrace, stavRegistraceNazev, atc, atcNazev, ucinneLatky, vydej, vydejNazev, dodavky, indikacniSkupina, indikacniSkupinaNazev, doping, ean, datumRegistrace, platnostDo, spcSoubor, pilSoubor, slozeni, synonyma, popisek.",
+            "schema": { "type": "string", "default": "kodSukl,nazev,sila,formaNazev,cestaNazev,drzitelNazev,atcNazev,ucinneLatky,vydejNazev,indikacniSkupinaNazev,slozeni" }
+          },
+          {
+            "name": "$orderby",
+            "in": "query",
+            "description": "Řazení výsledků, např. nazev asc, kodSukl desc.",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "queryType",
+            "in": "query",
+            "description": "Typ dotazu. Použij 'semantic' pro sémantické vyhledávání.",
+            "schema": { "type": "string", "default": "semantic" }
+          },
+          {
+            "name": "semanticConfiguration",
+            "in": "query",
+            "description": "Konfigurace sémantického vyhledávání.",
+            "schema": { "type": "string", "default": "sukl-drugs-semantic" }
+          },
+          {
+            "name": "$count",
+            "in": "query",
+            "description": "Vrátit celkový počet výsledků.",
+            "schema": { "type": "boolean", "default": true }
+          },
+          {
+            "name": "api-version",
+            "in": "query",
+            "required": true,
+            "description": "Verze API.",
+            "schema": { "type": "string", "default": "2024-07-01" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Výsledky vyhledávání",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "@odata.count": { "type": "integer" },
+                    "value": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "kodSukl": { "type": "string", "description": "Kód SÚKL (7 číslic)" },
+                          "nazev": { "type": "string", "description": "Název léčivého přípravku" },
+                          "sila": { "type": "string", "description": "Síla přípravku" },
+                          "formaNazev": { "type": "string", "description": "Léková forma (tableta, injekce, mast...)" },
+                          "cestaNazev": { "type": "string", "description": "Cesta podání" },
+                          "drzitelNazev": { "type": "string", "description": "Držitel registrace" },
+                          "atc": { "type": "string", "description": "ATC kód" },
+                          "atcNazev": { "type": "string", "description": "Název ATC skupiny" },
+                          "ucinneLatky": { "type": "string", "description": "Účinné látky" },
+                          "vydejNazev": { "type": "string", "description": "Způsob výdeje" },
+                          "slozeni": { "type": "string", "description": "Složení přípravku" },
+                          "indikacniSkupinaNazev": { "type": "string", "description": "Indikační skupina" }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/indexes/sukl-drugs/docs('{kodSukl}')": {
+      "get": {
+        "operationId": "getDrugDetail",
+        "summary": "Detail léčivého přípravku podle kódu SÚKL",
+        "description": "Vrátí kompletní informace o léčivém přípravku podle jeho kódu SÚKL (7 číslic). Kód SÚKL vždy doplň na 7 číslic úvodními nulami.",
+        "parameters": [
+          {
+            "name": "kodSukl",
+            "in": "path",
+            "required": true,
+            "description": "Kód SÚKL léčivého přípravku (7 číslic, doplněný úvodními nulami).",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "$select",
+            "in": "query",
+            "description": "Pole k vrácení.",
+            "schema": { "type": "string", "default": "kodSukl,nazev,doplnekNazvu,sila,formaNazev,baleni,cestaNazev,obalNazev,drzitelNazev,drzitelZeme,regCislo,stavRegistraceNazev,atc,atcNazev,ucinneLatky,vydejNazev,dodavky,indikacniSkupinaNazev,doping,ean,datumRegistrace,platnostDo,spcSoubor,pilSoubor,slozeni,synonyma,popisek" }
+          },
+          {
+            "name": "api-version",
+            "in": "query",
+            "required": true,
+            "description": "Verze API.",
+            "schema": { "type": "string", "default": "2024-07-01" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Detail léčivého přípravku",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "kodSukl": { "type": "string" },
+                    "nazev": { "type": "string" },
+                    "sila": { "type": "string" },
+                    "formaNazev": { "type": "string" },
+                    "baleni": { "type": "string" },
+                    "cestaNazev": { "type": "string" },
+                    "obalNazev": { "type": "string" },
+                    "drzitelNazev": { "type": "string" },
+                    "drzitelZeme": { "type": "string" },
+                    "regCislo": { "type": "string" },
+                    "stavRegistraceNazev": { "type": "string" },
+                    "atc": { "type": "string" },
+                    "atcNazev": { "type": "string" },
+                    "ucinneLatky": { "type": "string" },
+                    "vydejNazev": { "type": "string" },
+                    "dodavky": { "type": "string" },
+                    "indikacniSkupinaNazev": { "type": "string" },
+                    "doping": { "type": "boolean" },
+                    "ean": { "type": "string" },
+                    "slozeni": { "type": "string" },
+                    "synonyma": { "type": "string" },
+                    "popisek": { "type": "string" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/indexes/sukl-pharmacies/docs": {
+      "get": {
+        "operationId": "searchPharmacies",
+        "summary": "Vyhledání lékáren",
+        "description": "Fulltextové a sémantické vyhledávání lékáren v databázi SÚKL. Hledej podle názvu, města, ulice, PSČ, typu lékárny nebo jména lékárníka. Můžeš filtrovat pohotovostní lékárny a lékárny se zásilkovým prodejem.",
+        "parameters": [
+          {
+            "name": "search",
+            "in": "query",
+            "required": true,
+            "description": "Hledaný text — název lékárny, město, ulice, jméno lékárníka. Použij * pro všechny záznamy (s filtrem).",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "$top",
+            "in": "query",
+            "description": "Počet výsledků (max 50, výchozí 10).",
+            "schema": { "type": "integer", "default": 10 }
+          },
+          {
+            "name": "$filter",
+            "in": "query",
+            "description": "OData filtr. Příklady: mesto eq 'Praha', pohotovost eq true, zasilkovyProdej eq true, typLekarny eq 'Z'. Pole pro filtrování: kodPracoviste, kodLekarny, icz, ico, mesto, psc, typLekarny, zasilkovyProdej, pohotovost.",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "$select",
+            "in": "query",
+            "description": "Čárkou oddělená pole k vrácení. Dostupná pole: nazev, kodPracoviste, kodLekarny, icz, ico, mesto, ulice, psc, adresa, lekarnik, www, email, telefon, typLekarny, typLekarnyNazev, zasilkovyProdej, pohotovost, pracovniDoba, popisek.",
+            "schema": { "type": "string", "default": "nazev,adresa,telefon,typLekarnyNazev,pohotovost,zasilkovyProdej,pracovniDoba,lekarnik" }
+          },
+          {
+            "name": "$orderby",
+            "in": "query",
+            "description": "Řazení výsledků, např. nazev asc.",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "queryType",
+            "in": "query",
+            "description": "Typ dotazu. Použij 'semantic' pro sémantické vyhledávání.",
+            "schema": { "type": "string", "default": "semantic" }
+          },
+          {
+            "name": "semanticConfiguration",
+            "in": "query",
+            "description": "Konfigurace sémantického vyhledávání.",
+            "schema": { "type": "string", "default": "sukl-pharmacies-semantic" }
+          },
+          {
+            "name": "$count",
+            "in": "query",
+            "description": "Vrátit celkový počet výsledků.",
+            "schema": { "type": "boolean", "default": true }
+          },
+          {
+            "name": "api-version",
+            "in": "query",
+            "required": true,
+            "description": "Verze API.",
+            "schema": { "type": "string", "default": "2024-07-01" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Výsledky vyhledávání lékáren",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "@odata.count": { "type": "integer" },
+                    "value": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "nazev": { "type": "string", "description": "Název lékárny" },
+                          "adresa": { "type": "string", "description": "Celá adresa" },
+                          "telefon": { "type": "string", "description": "Telefonní číslo" },
+                          "typLekarnyNazev": { "type": "string", "description": "Typ lékárny" },
+                          "pohotovost": { "type": "boolean", "description": "Má pohotovost" },
+                          "zasilkovyProdej": { "type": "boolean", "description": "Má zásilkový prodej" },
+                          "pracovniDoba": { "type": "string", "description": "Pracovní doba" },
+                          "lekarnik": { "type": "string", "description": "Vedoucí lékárník" }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/indexes/sukl-pharmacies/docs('{kodPracoviste}')": {
+      "get": {
+        "operationId": "getPharmacyDetail",
+        "summary": "Detail lékárny podle kódu pracoviště",
+        "description": "Vrátí kompletní informace o lékárně podle kódu pracoviště.",
+        "parameters": [
+          {
+            "name": "kodPracoviste",
+            "in": "path",
+            "required": true,
+            "description": "Kód pracoviště lékárny.",
+            "schema": { "type": "string" }
+          },
+          {
+            "name": "$select",
+            "in": "query",
+            "description": "Pole k vrácení.",
+            "schema": { "type": "string", "default": "nazev,kodPracoviste,kodLekarny,icz,ico,mesto,ulice,psc,adresa,lekarnik,www,email,telefon,typLekarnyNazev,zasilkovyProdej,pohotovost,pracovniDoba,popisek" }
+          },
+          {
+            "name": "api-version",
+            "in": "query",
+            "required": true,
+            "description": "Verze API.",
+            "schema": { "type": "string", "default": "2024-07-01" }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Detail lékárny",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "nazev": { "type": "string" },
+                    "kodPracoviste": { "type": "string" },
+                    "kodLekarny": { "type": "string" },
+                    "icz": { "type": "string" },
+                    "ico": { "type": "string" },
+                    "mesto": { "type": "string" },
+                    "ulice": { "type": "string" },
+                    "psc": { "type": "string" },
+                    "adresa": { "type": "string" },
+                    "lekarnik": { "type": "string" },
+                    "www": { "type": "string" },
+                    "email": { "type": "string" },
+                    "telefon": { "type": "string" },
+                    "typLekarnyNazev": { "type": "string" },
+                    "zasilkovyProdej": { "type": "boolean" },
+                    "pohotovost": { "type": "boolean" },
+                    "pracovniDoba": { "type": "string" }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "apiKey": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "api-key",
+        "description": "Azure AI Search query key"
+      }
+    }
+  }
+}

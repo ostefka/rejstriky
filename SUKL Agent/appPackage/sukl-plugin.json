@@ -1,0 +1,75 @@
+{
+  "$schema": "https://aka.ms/json-schemas/copilot-extensions/v2.1/plugin.schema.json",
+  "schema_version": "v2.4",
+  "name_for_human": "SÚKL – Léčiva a lékárny",
+  "description_for_human": "Vyhledávání léčivých přípravků a lékáren v databázi Státního ústavu pro kontrolu léčiv (SÚKL).",
+  "contact_email": "publisher-email@example.com",
+  "namespace": "suklOpenApi",
+  "functions": [
+    {
+      "name": "searchDrugs",
+      "description": "Vyhledání léčivých přípravků podle názvu, účinné látky, ATC kódu, držitele nebo indikační skupiny.",
+      "capabilities": {
+        "response_semantics": {
+          "data_path": "$.drugs",
+          "properties": {
+            "title": "$.nazev",
+            "subtitle": "$.kodSukl"
+          }
+        }
+      }
+    },
+    {
+      "name": "getDrugDetail",
+      "description": "Kompletní detail léčivého přípravku podle kódu SÚKL — složení, účinné látky, forma, podání, výdej, ATC, indikace, držitel, doping, SPC/PIL.",
+      "capabilities": {
+        "response_semantics": {
+          "data_path": "$",
+          "properties": {
+            "title": "$.nazev",
+            "subtitle": "$.kodSukl"
+          }
+        }
+      }
+    },
+    {
+      "name": "searchPharmacies",
+      "description": "Vyhledání lékáren podle města, názvu, adresy, PSČ nebo typu. Filtruj pohotovostní a zásilkové lékárny.",
+      "capabilities": {
+        "response_semantics": {
+          "data_path": "$.pharmacies",
+          "properties": {
+            "title": "$.nazev",
+            "subtitle": "$.adresa"
+          }
+        }
+      }
+    },
+    {
+      "name": "getPharmacyDetail",
+      "description": "Detail lékárny včetně adresy, pracovní doby, kontaktů, lékárníka a služeb (pohotovost, zásilkový prodej).",
+      "capabilities": {
+        "response_semantics": {
+          "data_path": "$",
+          "properties": {
+            "title": "$.nazev",
+            "subtitle": "$.adresa"
+          }
+        }
+      }
+    }
+  ],
+  "runtimes": [
+    {
+      "type": "OpenApi",
+      "auth": {
+        "type": "ApiKeyPluginVault",
+        "reference_id": "${{SUKL_API_KEY_REGISTRATION_ID}}"
+      },
+      "run_for_functions": ["searchDrugs", "getDrugDetail", "searchPharmacies", "getPharmacyDetail"],
+      "spec": {
+        "url": "sukl-openapi.json"
+      }
+    }
+  ]
+}

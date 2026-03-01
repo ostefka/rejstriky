@@ -1,0 +1,41 @@
+{
+    "$schema": "https://developer.microsoft.com/en-us/json-schemas/teams/v1.24/MicrosoftTeams.schema.json",
+    "manifestVersion": "1.24",
+    "version": "1.0.0",
+    "id": "68953d65-6696-44dd-8364-62791d317a93",
+    "developer": {
+        "name": "Ondrej Stefka",
+        "websiteUrl": "https://www.ai-news.cz",
+        "privacyUrl": "https://www.ai-news.cz/privacy",
+        "termsOfUseUrl": "https://www.ai-news.cz/terms"
+    },
+    "icons": {
+        "color": "color.png",
+        "outline": "outline.png"
+    },
+    "name": {
+        "short": "SÚKL Léčiva",
+        "full": "SÚKL Léčiva – Databáze léčivých přípravků a lékáren ČR"
+    },
+    "description": {
+        "short": "Vyhledávání léčivých přípravků a lékáren v databázi SÚKL",
+        "full": "Agent pro vyhledávání v otevřených datech Státního ústavu pro kontrolu léčiv (SÚKL). Obsahuje databázi 68 000 léčivých přípravků registrovaných v ČR (názvy, složení, účinné látky, ATC klasifikace, formy, výdej) a 2 671 lékáren (adresy, pracovní doba, pohotovost, zásilkový prodej). Data z opendata.sukl.cz."
+    },
+    "accentColor": "#006837",
+    "composeExtensions": [],
+    "copilotAgents": {
+        "declarativeAgents": [
+            {
+                "id": "declarativeAgent",
+                "file": "declarativeAgent.json"
+            }
+        ]
+    },
+    "permissions": [
+        "identity",
+        "messageTeamMembers"
+    ],
+    "validDomains": [
+        "ca-sukl-api.lemonground-800e6eb3.swedencentral.azurecontainerapps.io"
+    ]
+}

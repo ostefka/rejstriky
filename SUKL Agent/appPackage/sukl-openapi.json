@@ -1,0 +1,171 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "SUKL - Databaze leciv a lekaren",
+    "description": "Vyhledavani lecivych pripravku a lekaren v databazi SUKL. Vyhledavani v plnych textech SPC dokumentu pomoci AI.",
+    "version": "3.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://${{SUKL_API_HOSTNAME}}"
+    }
+  ],
+  "security": [{"apiKey": []}],
+  "components": {
+    "securitySchemes": {
+      "apiKey": {
+        "type": "apiKey",
+        "name": "api-key",
+        "in": "header"
+      }
+    }
+  },
+  "paths": {
+    "/api/drugs/search": {
+      "get": {
+        "operationId": "searchDrugs",
+        "summary": "Vyhledani lecivych pripravku",
+        "description": "Vyhledá léčivé přípravky podle názvu, účinné látky, ATC kódu, držitele nebo indikace. Parametr q je povinný.",
+        "parameters": [
+          {"name": "q", "in": "query", "required": true, "description": "Hledaný text — název léku, účinná látka, ATC kód, indikace.", "schema": {"type": "string"}},
+          {"name": "atc", "in": "query", "required": false, "description": "Filtr ATC kódu (N02BE01). Použij * pro prefix: N02*.", "schema": {"type": "string"}},
+          {"name": "holder", "in": "query", "required": false, "description": "Filtr držitele registrace.", "schema": {"type": "string"}},
+          {"name": "dispensing", "in": "query", "required": false, "description": "Výdej: prescription, otc, restricted.", "schema": {"type": "string", "enum": ["prescription", "otc", "restricted"]}},
+          {"name": "doping", "in": "query", "required": false, "description": "Filtr dopingových látek.", "schema": {"type": "boolean"}},
+          {"name": "available", "in": "query", "required": false, "description": "Léky s dodávkami na trh.", "schema": {"type": "boolean"}},
+          {"name": "form", "in": "query", "required": false, "description": "Léková forma (tableta, injekce, mast).", "schema": {"type": "string"}},
+          {"name": "maxResults", "in": "query", "required": false, "description": "Max výsledků (1-50, výchozí 10).", "schema": {"type": "integer", "default": 10}}
+        ],
+        "responses": {
+          "200": {
+            "description": "Nalezené léky.",
+            "content": {"application/json": {"schema": {"type": "object", "properties": {
+              "total": {"type": "integer"},
+              "drugs": {"type": "array", "items": {"type": "object", "properties": {
+                "kodSukl": {"type": "string"}, "nazev": {"type": "string"}, "sila": {"type": "string"},
+                "forma": {"type": "string"}, "cesta": {"type": "string"}, "drzitel": {"type": "string"},
+                "atc": {"type": "string"}, "atcNazev": {"type": "string"}, "ucinneLatky": {"type": "string"},
+                "vydej": {"type": "string"}, "indikace": {"type": "string"},
+                "dodavky": {"type": "string"}, "doping": {"type": "boolean"}
+              }}}
+            }}}}
+          }
+        }
+      }
+    },
+    "/api/drugs/{kodSukl}": {
+      "get": {
+        "operationId": "getDrugDetail",
+        "summary": "Detail léku podle kódu SÚKL",
+        "description": "Kompletní detail léčivého přípravku — složení, účinné látky, forma, podání, výdej, ATC, indikace, držitel, doping, SPC/PIL.",
+        "parameters": [
+          {"name": "kodSukl", "in": "path", "required": true, "description": "Kód SÚKL (7 číslic, doplní se nulami).", "schema": {"type": "string"}}
+        ],
+        "responses": {
+          "200": {
+            "description": "Detail léku.",
+            "content": {"application/json": {"schema": {"type": "object", "properties": {
+              "kodSukl": {"type": "string"}, "nazev": {"type": "string"}, "doplnekNazvu": {"type": "string"},
+              "sila": {"type": "string"}, "forma": {"type": "string"}, "baleni": {"type": "string"},
+              "cesta": {"type": "string"}, "obal": {"type": "string"}, "drzitel": {"type": "string"},
+              "drzitelZeme": {"type": "string"}, "regCislo": {"type": "string"}, "stavRegistrace": {"type": "string"},
+              "atc": {"type": "string"}, "atcNazev": {"type": "string"}, "ucinneLatky": {"type": "string"},
+              "vydej": {"type": "string"}, "dodavky": {"type": "string"}, "indikace": {"type": "string"},
+              "doping": {"type": "boolean"}, "ean": {"type": "string"},
+              "datumRegistrace": {"type": "string"}, "platnostDo": {"type": "string"},
+              "suklUrl": {"type": "string", "description": "Odkaz na detail léku na stránkách SÚKL"},
+              "slozeni": {"type": "string"}, "synonyma": {"type": "string"}
+            }}}}
+          },
+          "404": {"description": "Lék nenalezen."}
+        }
+      }
+    },
+    "/api/pharmacies/search": {
+      "get": {
+        "operationId": "searchPharmacies",
+        "summary": "Vyhledání lékáren",
+        "description": "Vyhledá lékárny podle města, názvu, adresy, PSČ nebo typu. Filtruj pohotovostní a zásilkové lékárny. Zadej alespoň jeden parametr.",
+        "parameters": [
+          {"name": "q", "in": "query", "required": false, "description": "Volný text — název, adresa, lékárník.", "schema": {"type": "string"}},
+          {"name": "city", "in": "query", "required": false, "description": "Město (Praha, Brno, Ostrava).", "schema": {"type": "string"}},
+          {"name": "emergency", "in": "query", "required": false, "description": "Pohotovostní lékárny.", "schema": {"type": "boolean"}},
+          {"name": "mailOrder", "in": "query", "required": false, "description": "Zásilkový prodej.", "schema": {"type": "boolean"}},
+          {"name": "type", "in": "query", "required": false, "description": "Typ: pharmacy, hospital, outlet.", "schema": {"type": "string", "enum": ["pharmacy", "hospital", "outlet"]}},
+          {"name": "postalCode", "in": "query", "required": false, "description": "PSČ.", "schema": {"type": "string"}},
+          {"name": "maxResults", "in": "query", "required": false, "description": "Max výsledků (1-50, výchozí 10).", "schema": {"type": "integer", "default": 10}}
+        ],
+        "responses": {
+          "200": {
+            "description": "Nalezené lékárny.",
+            "content": {"application/json": {"schema": {"type": "object", "properties": {
+              "total": {"type": "integer"},
+              "pharmacies": {"type": "array", "items": {"type": "object", "properties": {
+                "kodPracoviste": {"type": "string"}, "nazev": {"type": "string"}, "adresa": {"type": "string"},
+                "mesto": {"type": "string"}, "psc": {"type": "string"}, "telefon": {"type": "string"},
+                "typ": {"type": "string"}, "pohotovost": {"type": "string"}, "zasilkovyProdej": {"type": "string"},
+                "lekarnik": {"type": "string"}
+              }}}
+            }}}}
+          }
+        }
+      }
+    },
+    "/api/pharmacies/{kodPracoviste}": {
+      "get": {
+        "operationId": "getPharmacyDetail",
+        "summary": "Detail lékárny",
+        "description": "Kompletní detail — adresa, pracovní doba, kontakty, lékárník, služby.",
+        "parameters": [
+          {"name": "kodPracoviste", "in": "path", "required": true, "description": "Kód pracoviště.", "schema": {"type": "string"}}
+        ],
+        "responses": {
+          "200": {
+            "description": "Detail lékárny.",
+            "content": {"application/json": {"schema": {"type": "object", "properties": {
+              "kodPracoviste": {"type": "string"}, "kodLekarny": {"type": "string"},
+              "icz": {"type": "string"}, "ico": {"type": "string"},
+              "nazev": {"type": "string"}, "ulice": {"type": "string"}, "mesto": {"type": "string"},
+              "psc": {"type": "string"}, "adresa": {"type": "string"}, "lekarnik": {"type": "string"},
+              "www": {"type": "string"}, "email": {"type": "string"}, "telefon": {"type": "string"},
+              "typ": {"type": "string"}, "pohotovost": {"type": "string"}, "zasilkovyProdej": {"type": "string"},
+              "pracovniDoba": {"type": "string"}
+            }}}}
+          },
+          "404": {"description": "Lékárna nenalezena."}
+        }
+      }
+    },
+    "/api/documents/search": {
+      "get": {
+        "operationId": "searchDocuments",
+        "summary": "AI vyhledávání v SPC dokumentech",
+        "description": "Hybridní AI vyhledávání v plných textech SPC (Souhrn údajů o přípravku). Hledá nežádoucí účinky, kontraindikace, lékové interakce, dávkování, použití v těhotenství, farmakologii, uchovávání a další odborné informace. Používá vektorové embeddingy a sémantické přehodnocení pro přesné výsledky. Použij pro dotazy o vedlejších účincích, bezpečnosti, dávkování, interakcích, kontraindikacích, mechanismu účinku, farmakokinetice, použití v těhotenství a kojení.",
+        "parameters": [
+          {"name": "q", "in": "query", "required": true, "description": "Dotaz v přirozeném jazyce — např. 'nežádoucí účinky paracetamolu', 'kontraindikace ibuprofenu', 'interakce warfarinu', 'dávkování metforminu u dětí'.", "schema": {"type": "string"}},
+          {"name": "maxResults", "in": "query", "required": false, "description": "Počet výsledků (1-10, výchozí 5).", "schema": {"type": "integer", "default": 5}}
+        ],
+        "responses": {
+          "200": {
+            "description": "Nalezené části SPC dokumentů.",
+            "content": {"application/json": {"schema": {"type": "object", "properties": {
+              "total": {"type": "integer", "description": "Celkový počet relevantních výsledků"},
+              "results": {"type": "array", "description": "Relevantní části SPC dokumentů seřazené podle relevance", "items": {"type": "object", "properties": {
+                "title": {"type": "string", "description": "Název SPC dokumentu (název souboru)"},
+                "drugCodes": {"type": "string", "description": "Kódy SÚKL léků pokrytých tímto SPC"},
+                "content": {"type": "string", "description": "Text části SPC dokumentu s relevantní informací"},
+                "highlight": {"type": "string", "description": "Zvýrazněná klíčová pasáž"},
+                "relevance": {"type": "number", "description": "Skóre relevance (0-4, vyšší = relevantnější)"}
+              }}},
+              "answers": {"type": "array", "description": "Přímé extraktivní odpovědi z SPC dokumentů (pokud nalezeny)", "items": {"type": "object", "properties": {
+                "text": {"type": "string", "description": "Extrahovaná odpověď z SPC"},
+                "highlight": {"type": "string", "description": "Odpověď se zvýrazněním"},
+                "confidence": {"type": "number", "description": "Spolehlivost odpovědi (0-1)"}
+              }}}
+            }}}}
+          }
+        }
+      }
+    }
+  }
+}
