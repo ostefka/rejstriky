@@ -4,149 +4,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Návod pro administrátory — Nasazení agenta do M365 Copilot</title>
-    <style>
-        :root {
-            --bg: #0d1117;
-            --surface: #161b22;
-            --surface2: #1c2333;
-            --border: #30363d;
-            --text: #e6edf3;
-            --text-muted: #8b949e;
-            --accent: #58a6ff;
-            --accent-hover: #79c0ff;
-            --green: #3fb950;
-            --red: #f85149;
-            --yellow: #d29922;
-            --purple: #bc8cff;
-            --card-radius: 12px;
-        }
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
-            background: var(--bg);
-            color: var(--text);
-            line-height: 1.7;
-        }
-        .container { max-width: 780px; margin: 0 auto; padding: 0 24px; }
-
-        /* Header */
-        header {
-            background: linear-gradient(135deg, #0d1117 0%, #161b22 100%);
-            border-bottom: 1px solid var(--border);
-            padding: 48px 0 40px;
-            text-align: center;
-        }
-        header h1 { font-size: 2rem; font-weight: 700; margin-bottom: 8px; }
-        header h1 span { color: var(--accent); }
-        header p { color: var(--text-muted); font-size: 1.05rem; max-width: 600px; margin: 0 auto; }
-        .badge-row { margin-top: 16px; display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; }
-        .badge {
-            display: inline-block; padding: 4px 12px; border-radius: 20px;
-            font-size: 0.78rem; font-weight: 600; letter-spacing: 0.02em;
-        }
-        .badge-blue { background: rgba(88,166,255,0.15); color: var(--accent); border: 1px solid rgba(88,166,255,0.3); }
-        .badge-green { background: rgba(63,185,80,0.15); color: var(--green); border: 1px solid rgba(63,185,80,0.3); }
-
-        /* Back link */
-        .back-link {
-            display: inline-block; margin: 24px 0 0; font-size: 0.9rem;
-            color: var(--accent); text-decoration: none;
-        }
-        .back-link:hover { text-decoration: underline; }
-
-        /* Article body */
-        article { padding: 40px 0 60px; }
-        h2 { font-size: 1.5rem; margin: 40px 0 12px; color: var(--text); border-bottom: 1px solid var(--border); padding-bottom: 8px; }
-        h3 { font-size: 1.15rem; margin: 28px 0 10px; color: var(--accent); }
-        p { margin-bottom: 14px; color: var(--text-muted); font-size: 0.95rem; }
-        ol, ul { padding-left: 24px; margin-bottom: 16px; }
-        li { margin-bottom: 6px; color: var(--text-muted); font-size: 0.95rem; }
-        li strong { color: var(--text); }
-        a { color: var(--accent); }
-
-        /* Step cards */
-        .step {
-            background: var(--surface);
-            border: 1px solid var(--border);
-            border-radius: var(--card-radius);
-            padding: 24px;
-            margin-bottom: 24px;
-        }
-        .step-header {
-            display: flex; align-items: center; gap: 12px; margin-bottom: 14px;
-        }
-        .step-number {
-            background: var(--accent);
-            color: #0d1117;
-            width: 36px; height: 36px;
-            border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            font-weight: 700; font-size: 1rem; flex-shrink: 0;
-        }
-        .step-title { font-size: 1.1rem; font-weight: 600; }
-        .step p { margin-bottom: 12px; }
-        .step img {
-            width: 100%;
-            border-radius: 8px;
-            border: 1px solid var(--border);
-            margin-top: 8px;
-        }
-
-        /* Callout boxes */
-        .callout { border-radius: 8px; padding: 14px 18px; margin: 16px 0; font-size: 0.9rem; }
-        .callout-tip { background: rgba(63,185,80,0.08); border-left: 3px solid var(--green); }
-        .callout-tip strong { color: var(--green); }
-        .callout-warn { background: rgba(210,153,34,0.08); border-left: 3px solid var(--yellow); }
-        .callout-warn strong { color: var(--yellow); }
-        .callout-info { background: rgba(88,166,255,0.08); border-left: 3px solid var(--accent); }
-        .callout-info strong { color: var(--accent); }
-
-        /* Download button */
-        .download-btn {
-            display: inline-flex; align-items: center; gap: 10px;
-            background: var(--accent); color: #0d1117;
-            padding: 12px 28px; border-radius: 8px;
-            font-weight: 700; font-size: 1rem;
-            text-decoration: none; transition: background 0.2s;
-            margin: 8px 0 16px;
-        }
-        .download-btn:hover { background: var(--accent-hover); }
-        .download-btn svg { width: 20px; height: 20px; }
-
-        /* Code */
-        code {
-            background: var(--surface2); padding: 2px 6px; border-radius: 4px;
-            font-size: 0.88rem; color: var(--accent);
-        }
-
-        /* Table */
-        table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 0.9rem; }
-        th, td { padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--border); }
-        th { background: var(--surface2); color: var(--text-muted); font-weight: 600; font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.04em; }
-        td { color: var(--text-muted); }
-
-        /* Footer */
-        footer {
-            border-top: 1px solid var(--border); padding: 24px 0; text-align: center;
-            color: var(--text-muted); font-size: 0.82rem;
-        }
-    </style>
+    <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <header>
-        <div class="container">
-            <h1>🛡️ Návod pro <span>administrátory</span></h1>
-            <p>Jak nasadit agenta Rejstříky ČR do M365 Copilot prostřednictvím Admin portálu</p>
+    <header class="site-header">
+        <div class="container-narrow header-center">
+            <h1>Návod pro administrátory</h1>
+            <p class="subtitle">Jak nasadit agenta Rejstříky ČR do M365 Copilot prostřednictvím Admin portálu</p>
             <div class="badge-row">
-                <span class="badge badge-blue">M365 Admin Center</span>
-                <span class="badge badge-green">Copilot Agent</span>
+                <span class="badge">M365 Admin Center</span>
+                <span class="badge">Copilot Agent</span>
             </div>
-            <a href="index.html" class="back-link">← Zpět na přehled agentů</a>
+            <a href="index.html" class="back-link">&larr; Zpět na přehled agentů</a>
         </div>
     </header>
 
     <article>
-        <div class="container">
+        <div class="container-narrow">
 
             <h2>Než začnete</h2>
             <p>Pro nasazení agenta potřebujete:</p>
@@ -162,18 +36,16 @@
 
             <h2>Postup nasazení — krok za krokem</h2>
 
-            <!-- Step 1 -->
             <div class="step">
                 <div class="step-header">
                     <div class="step-number">1</div>
                     <div class="step-title">Otevřete M365 Admin Center a přejděte do sekce Agents</div>
                 </div>
-                <p>Přejděte na <a href="https://admin.microsoft.com" target="_blank">admin.microsoft.com</a> → <strong>Agents</strong> → <strong>All agents</strong> → klikněte <strong>Upload custom agent</strong>.</p>
-                <p>Nebo přejděte přímo na <a href="https://admin.microsoft.com/#/copilot/agents" target="_blank">Agents → All agents</a>.</p>
+                <p>Přejděte na <a href="https://admin.microsoft.com" target="_blank">admin.microsoft.com</a> &rarr; <strong>Agents</strong> &rarr; <strong>All agents</strong> &rarr; klikněte <strong>Upload custom agent</strong>.</p>
+                <p>Nebo přejděte přímo na <a href="https://admin.microsoft.com/#/copilot/agents" target="_blank">Agents &rarr; All agents</a>.</p>
                 <img src="img/01addagent.png" alt="Krok 1 — Upload custom agent" loading="lazy">
             </div>
 
-            <!-- Step 2 -->
             <div class="step">
                 <div class="step-header">
                     <div class="step-number">2</div>
@@ -183,7 +55,6 @@
                 <img src="img/02choosefile.png" alt="Krok 2 — Výběr souboru" loading="lazy">
             </div>
 
-            <!-- Step 3 -->
             <div class="step">
                 <div class="step-header">
                     <div class="step-number">3</div>
@@ -193,7 +64,6 @@
                 <img src="img/03clicknext.png" alt="Krok 3 — Klikněte Next" loading="lazy">
             </div>
 
-            <!-- Step 4 -->
             <div class="step">
                 <div class="step-header">
                     <div class="step-number">4</div>
@@ -207,7 +77,6 @@
                 <img src="img/04selectusers.png" alt="Krok 4 — Výběr uživatelů" loading="lazy">
             </div>
 
-            <!-- Step 5 -->
             <div class="step">
                 <div class="step-header">
                     <div class="step-number">5</div>
@@ -215,12 +84,11 @@
                 </div>
                 <p>Zkontrolujte požadovaná oprávnění agenta a klikněte <strong>Next</strong>.</p>
                 <div class="callout callout-tip">
-                    <strong>Agent nepotřebuje žádná zvláštní oprávnění.</strong> Komunikuje pouze s externími API (ARES, Hlídač státu) — nepřistupuje k žádným interním firemním datům ani souborům.
+                    <p><strong>Agent nepotřebuje žádná zvláštní oprávnění.</strong> Komunikuje pouze s externími API (ARES, Hlídač státu) — nepřistupuje k žádným interním firemním datům ani souborům.</p>
                 </div>
                 <img src="img/05acceptpermissions.png" alt="Krok 5 — Oprávnění" loading="lazy">
             </div>
 
-            <!-- Step 6 -->
             <div class="step">
                 <div class="step-header">
                     <div class="step-number">6</div>
@@ -230,7 +98,6 @@
                 <img src="img/06finish.png" alt="Krok 6 — Dokončení nasazení" loading="lazy">
             </div>
 
-            <!-- Step 7 -->
             <div class="step">
                 <div class="step-header">
                     <div class="step-number">7</div>
@@ -245,18 +112,18 @@
             <p>Při budoucích aktualizacích (nové funkce, opravy, změna instrukcí):</p>
             <ol>
                 <li>Stáhněte nový ZIP balíček</li>
-                <li>V M365 Admin Center přejděte na <strong>Agents</strong> → <strong>All agents</strong></li>
+                <li>V M365 Admin Center přejděte na <strong>Agents</strong> &rarr; <strong>All agents</strong></li>
                 <li>Najděte <strong>Rejstříky ČR</strong> v seznamu</li>
-                <li>Klikněte na aplikaci → <strong>Update</strong> → nahrajte nový ZIP</li>
+                <li>Klikněte na aplikaci &rarr; <strong>Update</strong> &rarr; nahrajte nový ZIP</li>
             </ol>
             <div class="callout callout-info">
-                <strong>Poznámka:</strong> Aktualizace ZIP balíčku je potřeba pouze při změnách na straně agenta (instrukce, pluginy, ikony). Pokud se mění pouze backend server (nové datové zdroje, opravy chyb), žádná akce ze strany administrátora není nutná.
+                <p><strong>Poznámka:</strong> Aktualizace ZIP balíčku je potřeba pouze při změnách na straně agenta (instrukce, pluginy, ikony). Pokud se mění pouze backend server (nové datové zdroje, opravy chyb), žádná akce ze strany administrátora není nutná.</p>
             </div>
 
             <h2>Odebrání agenta</h2>
             <p>Pokud potřebujete agenta odebrat:</p>
             <ol>
-                <li>V M365 Admin Center přejděte na <strong>Agents</strong> → <strong>All agents</strong></li>
+                <li>V M365 Admin Center přejděte na <strong>Agents</strong> &rarr; <strong>All agents</strong></li>
                 <li>Najděte <strong>Rejstříky ČR</strong></li>
                 <li>Klikněte <strong>Remove</strong></li>
             </ol>
@@ -283,14 +150,14 @@
             </table>
 
             <div class="callout callout-warn">
-                <strong>Důležité:</strong> Agent komunikuje s externími API (ARES — ares.gov.cz, Hlídač státu — hlidacstatu.cz). Tato API jsou veřejně dostupná a agent k nim přistupuje bez autentizace. Žádná firemní data neopouštějí organizaci.
+                <p><strong>Důležité:</strong> Agent komunikuje s externími API (ARES — ares.gov.cz, Hlídač státu — hlidacstatu.cz). Tato API jsou veřejně dostupná a agent k nim přistupuje bez autentizace. Žádná firemní data neopouštějí organizaci.</p>
             </div>
 
         </div>
     </article>
 
-    <footer>
-        <div class="container">
+    <footer class="site-footer">
+        <div class="container-narrow">
             Poslední aktualizace: únor 2026 · Rejstříky ČR — M365 Copilot Agent
         </div>
     </footer>
